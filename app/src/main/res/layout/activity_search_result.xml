@@ -21,10 +21,9 @@
             android:id="@+id/txtBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="<"
-            android:paddingRight="20dp"
-            android:textSize="25dp"
+            android:background="@drawable/icn_back"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
             android:textStyle="bold"
             android:textColor="#fff"
             />
@@ -53,45 +52,69 @@
             android:layout_height="wrap_content"
             android:text="TP HCM"
             android:padding="7dp"
+            android:textColor="#333"
             android:layout_alignRight="@+id/edtSearch"
             android:textStyle="bold"
             />
     </RelativeLayout>
-        <RelativeLayout
+        <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-            <Button
+            <TextView
+                android:textColor="#000"
+                android:textSize="17dp"
+                android:gravity="center"
+                android:background="#edf"
+                android:paddingVertical="10dp"
+                android:layout_marginRight="1dp"
                 android:id="@+id/btn1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:text="Đúng nhất"
+                android:layout_weight="0.3"
                 />
-            <Button
+            <TextView
+                android:textColor="#000"
+                android:textSize="17dp"
+                android:gravity="center"
+                android:background="#edf"
+                android:paddingVertical="10dp"
+                android:layout_marginRight="1dp"
                 android:id="@+id/btn2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/btn1"
+                android:layout_weight="0.3"
                 android:text="Gần nhất"
                 />
-            <Button
+            <TextView
+                android:textColor="#000"
+                android:textSize="17dp"
+                android:gravity="center"
+                android:background="#edf"
+                android:paddingVertical="10dp"
+                android:layout_marginRight="1dp"
                 android:id="@+id/btn3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/btn2"
+                android:layout_weight="0.3"
                 android:text="Phổ biến"
                 />
-            <Button
+            <TextView
+                android:textColor="#000"
+                android:textSize="17dp"
+                android:gravity="center"
+                android:background="#edf"
+                android:paddingVertical="10dp"
                 android:id="@+id/btn4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/btn3"
-                android:layout_alignParentRight="true"
+                android:layout_weight="0.1"
                 android:text="Lọc"
-                android:drawableRight="@drawable/icn_search"
+                android:drawableRight="@drawable/icn_filter"
+                android:paddingRight="5dp"
                 />
-        </RelativeLayout>
+        </TableRow>
     <ListView
         android:id="@+id/lstResult"
         android:layout_width="match_parent"

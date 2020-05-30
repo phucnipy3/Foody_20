@@ -2,29 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"/>
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        android:background="@drawable/bundau01">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#38f"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="5dp"
+            android:text="Review"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="20dp"
+            />
+    </RelativeLayout>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text=""
-        android:background="#3af"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="5dp"
-        android:textColor="#fff"
+        android:text="Canh bún cô ba"
         android:textStyle="bold"
+        android:textColor="#000"
+        android:textSize="16dp"
         />
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textStyle="bold"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
+        android:text="Mã khuyến mãi. Miễn phí vận chuyển."
         />
 </LinearLayout>

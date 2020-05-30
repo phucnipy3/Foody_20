@@ -3,9 +3,11 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_margin="5dp"
+        android:src="@drawable/bundau01"
+        android:scaleType="fitXY"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +28,7 @@
                 android:textStyle="bold"
                 android:textSize="20dp"
                 android:textColor="#000"
+                android:text="Bún đậu mắm tôm Thủ Đức"
                 />
             <TextView
                 android:id="@+id/txtRate"
@@ -34,7 +37,8 @@
                 android:layout_alignParentRight="true"
                 android:textStyle="bold"
                 android:textColor="#3d5"
-                android:textSize="17dp"
+                android:textSize="20dp"
+                android:text="6.3"
                 />
         </RelativeLayout>
         <LinearLayout
@@ -53,12 +57,14 @@
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/txtS"
+                    android:text="Chợ linh trung, Thủ Đức,TP HCM"
                     />
                 <TextView
                     android:id="@+id/txtS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:text="4.2km"
                     />
             </RelativeLayout>
             <LinearLayout
@@ -69,7 +75,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-
                     >
                     <TextView
                         android:id="@+id/txtKind"
@@ -78,6 +83,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_toLeftOf="@+id/txtCmt"
                         android:textColor="#000"
+                        android:text="Quán ăn"
                         />
                     <TextView
                         android:id="@+id/txtCmt"
@@ -86,6 +92,7 @@
                         android:layout_toLeftOf="@+id/txtPhoto"
                         android:drawableLeft="@drawable/icn_comment"
                         android:layout_marginRight="5dp"
+                        android:text="256"
                         />
                     <TextView
                         android:id="@+id/txtPhoto"
@@ -93,6 +100,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:drawableLeft="@drawable/icn_cam"
+                        android:text="494"
                         />
                 </RelativeLayout>
              <TextView
@@ -100,6 +108,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/icon_now"
             android:textColor="#000"
+            android:text="   Nhập 'KHANGLD' nhận giảm 20k"
             />
             </LinearLayout>
     </LinearLayout>

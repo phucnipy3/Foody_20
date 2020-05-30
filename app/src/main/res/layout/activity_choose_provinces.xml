@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hủy"
                 android:background="#f00"
-                android:textColor="#ddd"
+                android:textColor="#eee"
                 android:padding="10dp"
                 android:textSize="20dp"
                 />
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="Xong"
                 android:background="#f00"
-                android:textColor="#ddd"
+                android:textColor="#eee"
                 android:padding="10dp"
                 android:textSize="20dp"
                 android:layout_alignParentRight="true"
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_bgr"
             android:drawableLeft="@drawable/icn_search"
-            android:padding="5dp"
-            android:hint="Tìm địa điểm, món ăn, địa chỉ..."
+            android:padding="8dp"
+            android:hint="Tìm thành phố..."
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="5dp"
             />

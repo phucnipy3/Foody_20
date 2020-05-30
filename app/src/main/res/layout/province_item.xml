@@ -2,10 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#fff"
+    android:layout_marginVertical="1dp"
+    android:paddingLeft="20dp"
+    >
+    <TextView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:paddingHorizontal="15dp"
+        android:background="@drawable/icn_check"
+        android:textColor="#37f"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="30dp"
         android:paddingVertical="10dp"
+        android:text="TP HCM"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="#000"
         />
+</LinearLayout>
 </LinearLayout>
