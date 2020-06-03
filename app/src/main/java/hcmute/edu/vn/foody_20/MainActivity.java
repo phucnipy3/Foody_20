@@ -15,10 +15,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
+        if(getIntent().getExtras()!=null) {
+            Intent intent = getIntent();
+
+            String provinceName = intent.getExtras().getString("ProvinceName");
+            txtProvinces.setText(provinceName);
+        }
         txtProvinces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,ChooseProvincesActivity.class));
+                Intent intent = new Intent(MainActivity.this,ChooseProvincesActivity.class);
+                intent.putExtra("CurrentProvince",txtProvinces.getText());
+                startActivity(intent);
+
             }
         });
 

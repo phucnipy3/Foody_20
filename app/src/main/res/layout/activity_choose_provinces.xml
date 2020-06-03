@@ -61,13 +61,12 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="5dp"
             />
+
         <ListView
             android:id="@+id/lstProvices"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            >
-        </ListView>
+            android:layout_height="404dp"
+            android:layout_marginHorizontal="10dp"></ListView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
