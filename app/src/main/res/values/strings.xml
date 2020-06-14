@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Foody_20</string>
+    <string name="connection">jdbc:jtds:sqlserver://Nhom20FoodyDB.mssql.somee.com/Nhom20FoodyDB;user=phucni;password=12345678</string>
 </resources>
