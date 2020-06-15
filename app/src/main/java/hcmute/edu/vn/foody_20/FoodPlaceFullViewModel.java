@@ -10,22 +10,10 @@ public class FoodPlaceFullViewModel {
     private String image;
     private Time openTime;
     private Time closeTime;
+    private String reviewContent;
     private int reviewCount;
     private int checkinCount;
     private float rate;
-
-    public FoodPlaceFullViewModel(int id, String name, String address, String type, String image, Time openTime, Time closeTime, int reviewCount, int checkinCount, float rate) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.type = type;
-        this.image = image;
-        this.openTime = openTime;
-        this.closeTime = closeTime;
-        this.reviewCount = reviewCount;
-        this.checkinCount = checkinCount;
-        this.rate = rate;
-    }
 
     public int getId() {
         return id;
@@ -83,6 +71,14 @@ public class FoodPlaceFullViewModel {
         this.closeTime = closeTime;
     }
 
+    public String getReviewContent() {
+        return reviewContent;
+    }
+
+    public void setReviewContent(String reviewContent) {
+        this.reviewContent = reviewContent;
+    }
+
     public int getReviewCount() {
         return reviewCount;
     }
@@ -104,6 +100,20 @@ public class FoodPlaceFullViewModel {
     }
 
     public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    public FoodPlaceFullViewModel(int id, String name, String address, String type, String image, Time openTime, Time closeTime, String reviewContent, int reviewCount, int checkinCount, float rate) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.type = type;
+        this.image = image;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.reviewContent = reviewContent;
+        this.reviewCount = reviewCount;
+        this.checkinCount = checkinCount;
         this.rate = rate;
     }
 }

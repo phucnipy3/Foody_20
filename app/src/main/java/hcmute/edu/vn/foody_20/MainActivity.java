@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
 
+        Intent intenta = new Intent(MainActivity.this, DetailsActivity.class);
+        startActivity(intenta);
+
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
 
@@ -46,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         int pageIndex = 0;
         new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
         // Query cho quán ăn full thông tin
-        String searchString = "bún";
+        String searchString = "";
         int provinceID = 1;
-        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProviceId == Provice.Id ";
+        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
         if(!searchString.equals("") && !searchString.equals(null)){
             query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
         }
-        query = query + "and Provice.Id == " + String.valueOf(provinceID) + " ";
+        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
         query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
         new GetFoodPlaceFull().execute(query);
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     float rate = resultSet.getFloat("Rate");
                     String image = resultSet.getString("Image");
                     String reviewContent = resultSet.getString("ReviewContent");
-                    foodPlaceFullViewModels.add(new FoodPlaceFullViewModel(id,name,address,type,image,openTime,closeTime,reviewCount,checkinCount,rate));
+                    foodPlaceFullViewModels.add(new FoodPlaceFullViewModel(id,name,address,type,image,openTime,closeTime,reviewContent,reviewCount,checkinCount,rate));
                 }
                 DBconn.close();
             } catch (Exception e) {
