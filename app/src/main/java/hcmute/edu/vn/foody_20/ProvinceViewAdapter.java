@@ -17,14 +17,14 @@ import android.widget.Toast;
 import java.util.List;
 
 
-public class ProvinceAdapter extends BaseAdapter {
+public class ProvinceViewAdapter extends BaseAdapter {
     private ChooseProvincesActivity context;
     private int layout;
     private List<Province> provinceList;
     private String provinceName;
     private  int mSelectedItem = -1;
 
-    public ProvinceAdapter(ChooseProvincesActivity context, int layout, List<Province> provinceList, String provinceName) {
+    public ProvinceViewAdapter(ChooseProvincesActivity context, int layout, List<Province> provinceList, String provinceName) {
         this.context = context;
         this.layout = layout;
         this.provinceList = provinceList;

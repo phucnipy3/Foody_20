@@ -2,20 +2,16 @@ package hcmute.edu.vn.foody_20;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +24,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     ListView lstProvinces;
     EditText edtSearch;
     ArrayList<Province> provinceArrayList;
-    ProvinceAdapter provinceAdapter;
+    ProvinceViewAdapter provinceAdapter;
     Intent intentProvince;
 
     @Override
@@ -44,7 +40,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
-        provinceAdapter = new ProvinceAdapter(this,R.layout.line_province,provinceArrayList,GetCurrentProvince());
+        provinceAdapter = new ProvinceViewAdapter(this,R.layout.line_province,provinceArrayList,GetCurrentProvince());
         lstProvinces.setAdapter(provinceAdapter);
 
         GetDataProvince();
@@ -91,7 +87,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
     }
 
-    public  void SendProvinceName( String name){
+    public void SendProvinceName( String name){
         intentProvince.putExtra("ProvinceName",name);
     }
 

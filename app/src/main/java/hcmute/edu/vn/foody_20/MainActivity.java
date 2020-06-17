@@ -1,6 +1,8 @@
 package hcmute.edu.vn.foody_20;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,9 +17,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    TextView txtProvinces;
+    private TextView txtProvinces;
+    private List<FoodPlaceCardViewModel> lstFoodPlaceCardView;
+    FoodPlaceCardViewAdapter myFoodPlaceAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
 
-        Intent intenta = new Intent(MainActivity.this, DetailsActivity.class);
-        startActivity(intenta);
 
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
@@ -44,20 +48,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        lstFoodPlaceCardView = new ArrayList<>();
+        RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
+        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlaceCardView);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
+        rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
+
         // Lấy trang đầu tiên là 10 thằng;
         // load more thì tăng pageIndex lên;
         int pageIndex = 0;
         new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
-        // Query cho quán ăn full thông tin
-        String searchString = "";
-        int provinceID = 1;
-        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
-        if(!searchString.equals("") && !searchString.equals(null)){
-            query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
-        }
-        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
-        query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
-        new GetFoodPlaceFull().execute(query);
+        myFoodPlaceAdapter.notifyDataSetChanged();
+//        // Query cho quán ăn full thông tin
+//        String searchString = "";
+//        int provinceID = 1;
+//        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
+//        if(!searchString.equals("") && !searchString.equals(null)){
+//            query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
+//        }
+//        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
+//        query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
+//        new GetFoodPlaceFull().execute(query);
 
     }
     private class GetFoodPlaceCardAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceCardViewModel>>{
@@ -148,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
         // Tạo cái array list rồi add vô như bên Choose province
         // t làm load 1 lần 10 cái
         // có view more thì thay đổi tham số câu query rồi add vô, đừng clear cái list
+        for (FoodPlaceCardViewModel foodPlaceCardViewModel: foodPlaceCardViewModels
+        ) {
+            lstFoodPlaceCardView.add(foodPlaceCardViewModel);
+        }
+        myFoodPlaceAdapter.notifyDataSetChanged();
     }
 
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
