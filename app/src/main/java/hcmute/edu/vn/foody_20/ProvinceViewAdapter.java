@@ -79,12 +79,6 @@ public class ProvinceViewAdapter extends BaseAdapter {
 
         final Province province = provinceList.get(position);
         holder.txtProvinceName.setText(province.getProvinceName());
-        if(provinceName.equals(province.getProvinceName())){
-            Drawable iconCheck = context.getDrawable(R.drawable.icn_check);
-            iconCheck.setBounds(0, 0, 60, 60);
-            holder.txtProvinceName.setCompoundDrawables(null, null, iconCheck, null);
-        }
-
         if (mSelectedItem != -1) {
             if (position == mSelectedItem) {
                 Drawable iconCheck = context.getDrawable(R.drawable.icn_check);
@@ -95,6 +89,16 @@ public class ProvinceViewAdapter extends BaseAdapter {
                 holder.txtProvinceName.setCompoundDrawables(null, null, null, null);
             }
         }
+        else
+            if(provinceName.equals(province.getProvinceName())){
+            Drawable iconCheck = context.getDrawable(R.drawable.icn_check);
+            iconCheck.setBounds(0, 0, 60, 60);
+            holder.txtProvinceName.setCompoundDrawables(null, null, iconCheck, null);
+            context.SendProvinceName(province.getProvinceName());
+        }
+            else {
+            holder.txtProvinceName.setCompoundDrawables(null, null, null, null);
+            }
 
         holder.txtProvinceName.setTag(position);
         return convertView;

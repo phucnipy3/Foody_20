@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,15 +24,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtProvinces;
     private List<FoodPlaceCardViewModel> lstFoodPlaceCardView;
     FoodPlaceCardViewAdapter myFoodPlaceAdapter;
-
+    SharedPreferences sharedPreferencesProvince;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
-
-
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
 
@@ -46,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("CurrentProvince",txtProvinces.getText());
                 startActivity(intent);
 
+
             }
         });
+
+        SaveProviceName(txtProvinces.getText().toString().trim());
+        txtProvinces.setText(sharedPreferencesProvince.getString("provincename","abc"));
+
         lstFoodPlaceCardView = new ArrayList<>();
         RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
         myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlaceCardView);
@@ -168,5 +172,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         // Tương tự
+    }
+    public void SaveProviceName(String name){
+        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
+        editor.putString("provincename",name);
+        editor.commit();
     }
 }

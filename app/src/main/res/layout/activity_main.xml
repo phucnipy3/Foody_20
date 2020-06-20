@@ -28,16 +28,16 @@
                 android:hint="Tìm địa điểm, món ăn, địa chỉ..."
                 android:drawableRight="@drawable/btn_bgr"
                 />
+
             <TextView
                 android:id="@+id/txtProvinces"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TP HCM"
-                android:textColor="#333"
-                android:padding="7dp"
                 android:layout_alignRight="@+id/edtSearch"
-                android:textStyle="bold"
-                />
+                android:padding="7dp"
+                android:text="Hồ Chí Minh"
+                android:textColor="#333"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
