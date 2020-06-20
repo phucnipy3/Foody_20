@@ -3,6 +3,7 @@ package hcmute.edu.vn.foody_20;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +27,10 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     ArrayList<Province> provinceArrayList;
     ProvinceViewAdapter provinceAdapter;
     Intent intentProvince;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentProvince);
+
                 finish();
             }
         });
@@ -139,6 +145,13 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             provinceArrayList.add(province);
         }
         provinceAdapter.notifyDataSetChanged();
+    }
+    public void SaveProviceName(String name){
+        SharedPreferences sharedPreferencesProvince ;
+        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
+        editor.putString("provincename",name);
+        editor.commit();
     }
 
 }

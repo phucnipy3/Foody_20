@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtProvinces;
     private List<FoodPlaceCardViewModel> lstFoodPlaceCardView;
     FoodPlaceCardViewAdapter myFoodPlaceAdapter;
-    SharedPreferences sharedPreferencesProvince;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        sharedPreferences = getSharedPreferences("provincename",MODE_PRIVATE);
 
-        SaveProviceName(txtProvinces.getText().toString().trim());
-        txtProvinces.setText(sharedPreferencesProvince.getString("provincename","abc"));
+        txtProvinces.setText(sharedPreferences.getString("provincename","Hồ Chí Minh"));
 
         lstFoodPlaceCardView = new ArrayList<>();
         RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
@@ -173,10 +174,5 @@ public class MainActivity extends AppCompatActivity {
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         // Tương tự
     }
-    public void SaveProviceName(String name){
-        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
-        SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
-        editor.putString("provincename",name);
-        editor.commit();
-    }
+
 }
