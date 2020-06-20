@@ -33,14 +33,16 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<FoodPlaceCard
 
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.foodplace_cardview_item,parent,false);
+        view = mInflater.inflate(R.layout.main_item,parent,false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+        holder.tv_FPName.setText(mData.get(position).getName());
         holder.tv_review.setText(mData.get(position).getReview());
         Picasso.get().load(mData.get(position).getImage()).into(holder.img_foodplace);
+
         holder.cardView_foodplace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,11 +64,13 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<FoodPlaceCard
 
 
         TextView tv_review;
+        TextView tv_FPName;
         ImageView img_foodplace;
         CardView cardView_foodplace;
 
         public MyViewHolder(View itemView){
             super(itemView);
+            tv_FPName =(TextView) itemView.findViewById(R.id.tvFPName);
             tv_review =(TextView) itemView.findViewById(R.id.tvReview);
             img_foodplace=(ImageView) itemView.findViewById(R.id.imgFoodPlace);
             cardView_foodplace =(CardView) itemView.findViewById(R.id.card_view_id);

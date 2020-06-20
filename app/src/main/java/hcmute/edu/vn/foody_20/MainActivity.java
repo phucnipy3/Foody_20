@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,16 +21,17 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private TextView txtProvinces;
-    private List<FoodPlaceCardViewModel> lstFoodPlaceCardView;
+    private List<FoodPlaceCardViewModel> lstFoodPlace;
     FoodPlaceCardViewAdapter myFoodPlaceAdapter;
 
-    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
+
+
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
 
@@ -46,16 +46,11 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("CurrentProvince",txtProvinces.getText());
                 startActivity(intent);
 
-
             }
         });
-        sharedPreferences = getSharedPreferences("provincename",MODE_PRIVATE);
-
-        txtProvinces.setText(sharedPreferences.getString("provincename","Hồ Chí Minh"));
-
-        lstFoodPlaceCardView = new ArrayList<>();
+        lstFoodPlace = new ArrayList<>();
         RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
-        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlaceCardView);
+        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
         rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
         rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
 
@@ -166,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         // có view more thì thay đổi tham số câu query rồi add vô, đừng clear cái list
         for (FoodPlaceCardViewModel foodPlaceCardViewModel: foodPlaceCardViewModels
         ) {
-            lstFoodPlaceCardView.add(foodPlaceCardViewModel);
+            lstFoodPlace.add(foodPlaceCardViewModel);
         }
         myFoodPlaceAdapter.notifyDataSetChanged();
     }
@@ -174,5 +169,4 @@ public class MainActivity extends AppCompatActivity {
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         // Tương tự
     }
-
 }
