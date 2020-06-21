@@ -2,8 +2,10 @@ package hcmute.edu.vn.foody_20;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -15,14 +17,28 @@ import java.util.ArrayList;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    FoodPlaceDetailViewModel foodPlaceDetail;
+    TextView tvAddress,tvDistance,tvType,tvPrice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        foodPlaceDetail = new FoodPlaceDetailViewModel();
+        tvAddress =(TextView) findViewById(R.id.tvAddress);
+        tvDistance =(TextView) findViewById(R.id.tvDistance);
+        tvType =(TextView) findViewById(R.id.tvType);
+        tvPrice =(TextView) findViewById(R.id.tvPrice);
         // query;
-        int id = 2;
+        int id = 0;
+        if(getIntent().getExtras()!=null) {
+            Intent intent = getIntent();
+
+            id = intent.getExtras().getInt("idFoodPlace");
+
+        }
         String query = "select FoodPlace.Id Id, Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice from FoodPlace, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.Id = "+String.valueOf(id) + "group by FoodPlace.Id, Name, Address, Type, OpenTime, CloseTime";
         new GetFoodPlaceDetail().execute(query);
+
         String queryFood = "select * from FoodInMenu where FoodPlaceId = "+String.valueOf(id);
         new GetFoodWithImage().execute(queryFood);
     }
@@ -71,6 +87,13 @@ public class DetailsActivity extends AppCompatActivity {
     }
     public void SetFoodPlaceDetail(FoodPlaceDetailViewModel foodPlaceDetailViewModel)
     {
+        foodPlaceDetail.setAddress(foodPlaceDetailViewModel.getAddress());
+        foodPlaceDetail.setType(foodPlaceDetailViewModel.getType());
+        foodPlaceDetail.setMinPrice(foodPlaceDetailViewModel.getMinPrice());
+        foodPlaceDetail.setMaxPrice(foodPlaceDetailViewModel.getMaxPrice());
+        tvAddress.setText(foodPlaceDetail.getAddress());
+        tvType.setText(foodPlaceDetail.getType());
+        tvPrice.setText(foodPlaceDetail.getMinPrice() + " - " + foodPlaceDetail.getMaxPrice());
 
     }
 

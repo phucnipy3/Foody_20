@@ -167,6 +167,7 @@
                 android:layout_marginRight="100dp"
                 >
                 <TextView
+                    android:id="@+id/tvAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chợ thử Đức, Linh Trung, Thủ Đức, Thành phố Hồ Chí Minh."
@@ -180,6 +181,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     >
                     <TextView
+                        android:id="@+id/tvDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="4.2Km"
@@ -226,6 +228,7 @@
             android:background="@drawable/icn_restaurant"
             />
         <TextView
+            android:id="@+id/tvType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quán án - Món Việt"
@@ -245,6 +248,7 @@
                 android:background="@drawable/icn_dollar"
                 />
             <TextView
+                android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="70,000đ - 250,000đ"
