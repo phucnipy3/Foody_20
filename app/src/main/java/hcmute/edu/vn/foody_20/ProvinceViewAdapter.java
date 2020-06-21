@@ -84,7 +84,7 @@ public class ProvinceViewAdapter extends BaseAdapter {
                 Drawable iconCheck = context.getDrawable(R.drawable.icn_check);
                 iconCheck.setBounds(0, 0, 60, 60);
                 holder.txtProvinceName.setCompoundDrawables(null, null, iconCheck, null);
-                context.SendProvinceName(province.getProvinceName());
+                context.SaveProvinceName(province.getProvinceName());
             } else {
                 holder.txtProvinceName.setCompoundDrawables(null, null, null, null);
             }
@@ -94,7 +94,7 @@ public class ProvinceViewAdapter extends BaseAdapter {
             Drawable iconCheck = context.getDrawable(R.drawable.icn_check);
             iconCheck.setBounds(0, 0, 60, 60);
             holder.txtProvinceName.setCompoundDrawables(null, null, iconCheck, null);
-            context.SendProvinceName(province.getProvinceName());
+            context.SaveProvinceName(province.getProvinceName());
         }
             else {
             holder.txtProvinceName.setCompoundDrawables(null, null, null, null);

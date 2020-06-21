@@ -25,8 +25,10 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     ListView lstProvinces;
     EditText edtSearch;
     ArrayList<Province> provinceArrayList;
+    ArrayList<Province> provinceTempArrayList;
     ProvinceViewAdapter provinceAdapter;
     Intent intentProvince;
+
 
 
 
@@ -45,6 +47,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
+        provinceTempArrayList = new ArrayList<>();
         provinceAdapter = new ProvinceViewAdapter(this,R.layout.line_province,provinceArrayList,GetCurrentProvince());
         lstProvinces.setAdapter(provinceAdapter);
 
@@ -62,7 +65,6 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentProvince);
-
                 finish();
             }
         });
@@ -75,7 +77,21 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                new GetProvinceAsync().execute("SELECT * FROM Province Where Name like '%"+s+"%' ");
+                int countProvinceFound =0;
+                provinceArrayList.clear();
+                for (int i = 0; i < provinceTempArrayList.size(); i++) {
+                    if (provinceTempArrayList.get(i).getProvinceName().toLowerCase().contains(s.toString().toLowerCase())) {
+                        provinceArrayList.add(provinceTempArrayList.get(i));
+                        provinceAdapter.notifyDataSetChanged();
+                        countProvinceFound ++;
+                    }
+                }
+                if(countProvinceFound<1){
+                    provinceArrayList.clear();
+                    provinceAdapter.notifyDataSetChanged();
+                }
+
+
             }
 
             @Override
@@ -93,8 +109,14 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
     }
 
-    public void SendProvinceName( String name){
-        intentProvince.putExtra("ProvinceName",name);
+    public void SaveProvinceName( String name){
+        //intentProvince.putExtra("ProvinceName",name);
+        SharedPreferences sharedPreferencesProvince ;
+        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
+        editor.putString("provincename",name);
+        editor.commit();
+
     }
 
     public String GetCurrentProvince(){
@@ -143,15 +165,10 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         for (Province province: provinces
              ) {
             provinceArrayList.add(province);
+            provinceTempArrayList.add(province);
         }
         provinceAdapter.notifyDataSetChanged();
     }
-    public void SaveProviceName(String name){
-        SharedPreferences sharedPreferencesProvince ;
-        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
-        SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
-        editor.putString("provincename",name);
-        editor.commit();
-    }
+
 
 }

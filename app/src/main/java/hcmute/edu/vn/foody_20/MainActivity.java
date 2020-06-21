@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,12 +33,7 @@ public class MainActivity extends AppCompatActivity {
         txtProvinces = findViewById(R.id.txtProvinces);
 
 
-        if(getIntent().getExtras()!=null) {
-            Intent intent = getIntent();
-
-            String provinceName = intent.getExtras().getString("ProvinceName");
-            txtProvinces.setText(provinceName);
-        }
+        txtProvinces.setText(GetProvinceName());
 
         txtProvinces.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,5 +164,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         // Tương tự
+    }
+    public String GetProvinceName(){
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences("provincename",MODE_PRIVATE);
+        return sharedPreferences.getString("provincename","Hồ Chí Minh");
     }
 }
