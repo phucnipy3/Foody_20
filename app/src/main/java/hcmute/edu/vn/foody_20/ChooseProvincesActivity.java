@@ -27,6 +27,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     ArrayList<Province> provinceArrayList;
     ArrayList<Province> provinceTempArrayList;
     ProvinceViewAdapter provinceAdapter;
+    String tempProvinceName;
     Intent intentProvince;
 
 
@@ -65,6 +66,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentProvince);
+                SaveProvinceName();
                 finish();
             }
         });
@@ -109,12 +111,11 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
     }
 
-    public void SaveProvinceName( String name){
-        //intentProvince.putExtra("ProvinceName",name);
+    public void SaveProvinceName(){
         SharedPreferences sharedPreferencesProvince ;
-        sharedPreferencesProvince = getSharedPreferences("provincename",MODE_PRIVATE);
+        sharedPreferencesProvince = getSharedPreferences("currentprovincename",MODE_PRIVATE);
         SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
-        editor.putString("provincename",name);
+        editor.putString("currentprovincename",tempProvinceName);
         editor.commit();
 
     }
@@ -168,6 +169,9 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             provinceTempArrayList.add(province);
         }
         provinceAdapter.notifyDataSetChanged();
+    }
+    public void SendTempProvinceName(String name){
+        tempProvinceName =name;
     }
 
 

@@ -1,33 +1,77 @@
 package hcmute.edu.vn.foody_20;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    FoodPlaceDetailViewModel foodPlaceDetail;
-    TextView tvAddress,tvDistance,tvType,tvPrice;
+    private FusedLocationProviderClient client;
+    private Location myLocation = new Location("");
+    private Location foodplaceLocation = new Location("");
+    Geocoder geocoder;
+    List<Address> addresses;
+    TextView tvAddress,tvDistance,tvType,tvPrice,tvFoodPlaceName,tvTime,tvProvinceName,tvStatus;
+    List<Address> foodplaceaddresses;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        foodPlaceDetail = new FoodPlaceDetailViewModel();
+
+        geocoder = new Geocoder(this,Locale.getDefault());
+        client = LocationServices.getFusedLocationProviderClient(this);
+        GetMyLocation();
         tvAddress =(TextView) findViewById(R.id.tvAddress);
         tvDistance =(TextView) findViewById(R.id.tvDistance);
         tvType =(TextView) findViewById(R.id.tvType);
         tvPrice =(TextView) findViewById(R.id.tvPrice);
+        tvProvinceName = (TextView) findViewById(R.id.tvProvinceName);
+        tvFoodPlaceName =(TextView) findViewById(R.id.tvFoodPlaceName);
+        tvDistance =(TextView) findViewById(R.id.tvDistance);
+        tvTime =(TextView) findViewById(R.id.tvTime);
+        tvStatus =(TextView) findViewById(R.id.tvStatus);
         // query;
         int id = 0;
         if(getIntent().getExtras()!=null) {
@@ -36,7 +80,7 @@ public class DetailsActivity extends AppCompatActivity {
             id = intent.getExtras().getInt("idFoodPlace");
 
         }
-        String query = "select FoodPlace.Id Id, Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice from FoodPlace, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.Id = "+String.valueOf(id) + "group by FoodPlace.Id, Name, Address, Type, OpenTime, CloseTime";
+        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
         new GetFoodPlaceDetail().execute(query);
 
         String queryFood = "select * from FoodInMenu where FoodPlaceId = "+String.valueOf(id);
@@ -69,7 +113,9 @@ public class DetailsActivity extends AppCompatActivity {
                     Time closeTime = resultSet.getTime("CloseTime");
                     BigDecimal maxPrice = resultSet.getBigDecimal("MaxPrice");
                     BigDecimal minPrice= resultSet.getBigDecimal("MinPrice");
-                    foodPlaceDetailViewModel = new FoodPlaceDetailViewModel(id,name,address,type,openTime,closeTime,minPrice,maxPrice);
+                    String contact = resultSet.getString("Contact");
+                    String provinceName = resultSet.getString("ProvinceName");
+                    foodPlaceDetailViewModel = new FoodPlaceDetailViewModel(id,name,address,type,openTime,closeTime,minPrice,maxPrice,provinceName,contact);
                 }
                 DBconn.close();
             } catch (Exception e) {
@@ -87,15 +133,29 @@ public class DetailsActivity extends AppCompatActivity {
     }
     public void SetFoodPlaceDetail(FoodPlaceDetailViewModel foodPlaceDetailViewModel)
     {
-        foodPlaceDetail.setAddress(foodPlaceDetailViewModel.getAddress());
-        foodPlaceDetail.setType(foodPlaceDetailViewModel.getType());
-        foodPlaceDetail.setMinPrice(foodPlaceDetailViewModel.getMinPrice());
-        foodPlaceDetail.setMaxPrice(foodPlaceDetailViewModel.getMaxPrice());
-        tvAddress.setText(foodPlaceDetail.getAddress());
-        tvType.setText(foodPlaceDetail.getType());
-        tvPrice.setText(foodPlaceDetail.getMinPrice() + " - " + foodPlaceDetail.getMaxPrice());
+
+        try {
+            tvAddress.setText(foodPlaceDetailViewModel.getAddress());
+            tvType.setText(foodPlaceDetailViewModel.getType());
+            tvPrice.setText(foodPlaceDetailViewModel.getMinPrice() + " - " + foodPlaceDetailViewModel.getMaxPrice());
+            tvProvinceName.setText(foodPlaceDetailViewModel.getProvinceName());
+            tvTime.setText(foodPlaceDetailViewModel.getOpenTime().toString().substring( 0, 5 ) + " - " + foodPlaceDetailViewModel.getCloseTime().toString().substring( 0, 5 ));
+            tvFoodPlaceName.setText(foodPlaceDetailViewModel.getName());
+            tvDistance.setText(Distance(foodPlaceDetailViewModel.getAddress()));
+            int opentimeFomartted = Integer.parseInt(foodPlaceDetailViewModel.getOpenTime().toString().substring(0,5).replaceAll(":",""));
+            int closetimeFomartted = Integer.parseInt(foodPlaceDetailViewModel.getCloseTime().toString().substring(0,5).replaceAll(":",""));
+            int timesystemFomartted = Integer.parseInt(GetTimeSystem());
+            if(timesystemFomartted>=opentimeFomartted && timesystemFomartted<=closetimeFomartted)
+                tvStatus.setText("MỞ CỬA");
+            else
+                tvStatus.setText("CHƯA MỞ CỬA");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
 
     private class GetFoodWithImage extends AsyncTask<String, Void, ArrayList<FoodViewModel>>{
 
@@ -141,4 +201,52 @@ public class DetailsActivity extends AppCompatActivity {
     {
 
     }
+    public void GetMyLocation(){
+        if(ActivityCompat.checkSelfPermission(DetailsActivity.this, ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
+            return;
+        }
+        Task<Location> task =client.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location!=null){
+                    myLocation.setLatitude(location.getLatitude());
+                    myLocation.setLongitude(location.getLongitude());
+
+                }
+            }
+        });
+
+    }
+    public String Distance(String foodplaceAddress){
+        double distance = 0.0;
+        try {
+            foodplaceaddresses = geocoder.getFromLocationName(foodplaceAddress, 1);
+            if ( foodplaceaddresses != null && foodplaceaddresses.size() > 0) {
+
+                Address address = (Address) foodplaceaddresses.get(0);
+                foodplaceLocation.setLatitude(address.getLatitude());
+                foodplaceLocation.setLongitude(address.getLongitude());
+                distance = myLocation.distanceTo(foodplaceLocation)/1000;
+
+            }
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new DecimalFormat("##.#").format(distance) + " " +"km";
+    }
+    public String GetTimeSystem(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate.replaceAll(":","");
+
+    }
+
 }
