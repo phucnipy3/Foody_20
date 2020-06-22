@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -43,11 +45,14 @@ public class DetailsActivity extends AppCompatActivity {
     private FusedLocationProviderClient client;
     private Location myLocation = new Location("");
     private Location foodplaceLocation = new Location("");
-    Geocoder geocoder;
-    List<Address> addresses;
-    TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
-    List<Address> foodplaceaddresses;
+    private Geocoder geocoder;
+    private List<Address> addresses;
+    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
+    private List<Address> foodplaceaddresses;
     private String contact = "";
+
+    private List<FoodViewModel> lstFood;
+    private FoodViewAdapter myFoodAdapter;
 
 
     @Override
@@ -95,6 +100,11 @@ public class DetailsActivity extends AppCompatActivity {
             id = intent.getExtras().getInt("idFoodPlace");
 
         }
+        lstFood = new ArrayList<>();
+        RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFood_id);
+        myFoodAdapter = new FoodViewAdapter(this,lstFood);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
+        rcvFoodPlace.setAdapter(myFoodAdapter);
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
         new GetFoodPlaceDetail().execute(query);
 
@@ -209,13 +219,19 @@ public class DetailsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<FoodViewModel> foodViewModels) {
             super.onPostExecute(foodViewModels);
+            SetFoodsWithImage(foodViewModels);
 
         }
     }
 
-    public void SetFoods(ArrayList<FoodViewModel> foodViewModels)
+    public void SetFoodsWithImage(ArrayList<FoodViewModel> foodViewModels)
     {
-
+        lstFood.clear();
+        for (FoodViewModel foodViewModel: foodViewModels
+        ) {
+            lstFood.add(foodViewModel);
+        }
+        myFoodAdapter.notifyDataSetChanged();
     }
     public void GetMyLocation(){
         if(ActivityCompat.checkSelfPermission(DetailsActivity.this, ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){

@@ -38,7 +38,7 @@
         android:id="@+id/tvFPName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Canh bún cô ba a a a a a a a a a a ă ưa ăa"
+        android:text="Canh bún cô ba"
         android:textStyle="bold"
         android:textColor="#000"
         android:textSize="16dp"
