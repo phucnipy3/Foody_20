@@ -1,31 +1,21 @@
 package hcmute.edu.vn.foody_20;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -42,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import android.net.Uri;
+
+import android.Manifest;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -52,26 +45,48 @@ public class DetailsActivity extends AppCompatActivity {
     private Location foodplaceLocation = new Location("");
     Geocoder geocoder;
     List<Address> addresses;
-    TextView tvAddress,tvDistance,tvType,tvPrice,tvFoodPlaceName,tvTime,tvProvinceName,tvStatus;
+    TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
     List<Address> foodplaceaddresses;
+    private String contact = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        geocoder = new Geocoder(this,Locale.getDefault());
+        geocoder = new Geocoder(this, Locale.getDefault());
         client = LocationServices.getFusedLocationProviderClient(this);
         GetMyLocation();
-        tvAddress =(TextView) findViewById(R.id.tvAddress);
-        tvDistance =(TextView) findViewById(R.id.tvDistance);
-        tvType =(TextView) findViewById(R.id.tvType);
-        tvPrice =(TextView) findViewById(R.id.tvPrice);
+        tvAddress = (TextView) findViewById(R.id.tvAddress);
+        tvDistance = (TextView) findViewById(R.id.tvDistance);
+        tvType = (TextView) findViewById(R.id.tvType);
+        tvPrice = (TextView) findViewById(R.id.tvPrice);
         tvProvinceName = (TextView) findViewById(R.id.tvProvinceName);
-        tvFoodPlaceName =(TextView) findViewById(R.id.tvFoodPlaceName);
-        tvDistance =(TextView) findViewById(R.id.tvDistance);
-        tvTime =(TextView) findViewById(R.id.tvTime);
-        tvStatus =(TextView) findViewById(R.id.tvStatus);
+        tvFoodPlaceName = (TextView) findViewById(R.id.tvFoodPlaceName);
+        tvDistance = (TextView) findViewById(R.id.tvDistance);
+        tvTime = (TextView) findViewById(R.id.tvTime);
+        tvStatus = (TextView) findViewById(R.id.tvStatus);
+        tvContact = (TextView) findViewById(R.id.tvContact);
+        tvContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:"+contact));
+                String a = Uri.parse("tel:"+contact).toString();
+                if(ActivityCompat.checkSelfPermission(DetailsActivity.this, Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(DetailsActivity.this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            101);
+                    return;
+                }
+                
+                startActivity(intent);
+
+            }
+
+
+        });
         // query;
         int id = 0;
         if(getIntent().getExtras()!=null) {
@@ -150,6 +165,7 @@ public class DetailsActivity extends AppCompatActivity {
             else
                 tvStatus.setText("CHƯA MỞ CỬA");
 
+            contact = foodPlaceDetailViewModel.getContact();
         } catch (Exception e) {
             e.printStackTrace();
         }
