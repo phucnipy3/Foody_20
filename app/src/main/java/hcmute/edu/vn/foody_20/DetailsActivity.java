@@ -23,7 +23,7 @@ public class DetailsActivity extends AppCompatActivity {
         int id = 2;
         String query = "select FoodPlace.Id Id, Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice from FoodPlace, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.Id = "+String.valueOf(id) + "group by FoodPlace.Id, Name, Address, Type, OpenTime, CloseTime";
         new GetFoodPlaceDetail().execute(query);
-        String queryFood = "select * from FoodInMenu where FoodPlaceId = "+String.valueOf(id);
+        String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
         new GetFoodWithImage().execute(queryFood);
     }
 
@@ -98,7 +98,8 @@ public class DetailsActivity extends AppCompatActivity {
                     String foodImage = resultSet.getString("FoodImage");
                     int foodPlaceId = resultSet.getInt("FoodPlaceId");
                     int typeId = resultSet.getInt("TypeId");
-                    foodViewModels.add(new FoodViewModel(id,foodName,price,foodImage,foodPlaceId,typeId));
+                    String typeName = resultSet.getString("TypeName");
+                    foodViewModels.add(new FoodViewModel(id,foodName,price,foodImage,foodPlaceId,typeId,typeName));
                 }
                 DBconn.close();
             } catch (Exception e) {
