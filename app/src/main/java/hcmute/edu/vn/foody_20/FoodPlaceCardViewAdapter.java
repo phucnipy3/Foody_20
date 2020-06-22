@@ -46,11 +46,9 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<FoodPlaceCard
         holder.cardView_foodplace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(mContext,Book_Activity.class);
-//                intent.putExtra("Title",mData.get(position).getTitle());
-//                intent.putExtra("Description",mData.get(position).getDescription());
-//                intent.putExtra("Thumbnail",mData.get(position).getThumbnail());
-//                mContext.startActivity(intent);
+                Intent intent = new Intent(mContext,DetailsActivity.class);
+                intent.putExtra("idFoodPlace",mData.get(position).getId());
+                mContext.startActivity(intent);
             }
         });
     }

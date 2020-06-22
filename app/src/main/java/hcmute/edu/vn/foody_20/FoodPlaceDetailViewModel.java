@@ -12,6 +12,7 @@ public class FoodPlaceDetailViewModel {
     private Time closeTime;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
+    private String provinceName;
 
     public int getId() {
         return id;
@@ -77,8 +78,25 @@ public class FoodPlaceDetailViewModel {
         this.maxPrice = maxPrice;
     }
 
-    public FoodPlaceDetailViewModel(){}
-    public FoodPlaceDetailViewModel(int id, String name, String address, String type, Time openTime, Time closeTime, BigDecimal minPrice, BigDecimal maxPrice) {
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    private String contact;
+
+    public FoodPlaceDetailViewModel(int id, String name, String address, String type, Time openTime, Time closeTime, BigDecimal minPrice, BigDecimal maxPrice, String provinceName, String contact) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -87,5 +105,10 @@ public class FoodPlaceDetailViewModel {
         this.closeTime = closeTime;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
+        this.provinceName = provinceName;
+        this.contact = contact;
+    }
+    public FoodPlaceDetailViewModel(){
+
     }
 }
