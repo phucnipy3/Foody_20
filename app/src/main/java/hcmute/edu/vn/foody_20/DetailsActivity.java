@@ -142,8 +142,9 @@ public class DetailsActivity extends AppCompatActivity {
         rcvFoodPlace.setAdapter(myFoodAdapter);
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
         new GetFoodPlaceDetail().execute(query);
-        String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
-        new GetFoodWithImage().execute(queryFood);
+
+        //String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
+        // GetFoodWithImage().execute(queryFood);
     }
 
     private class GetFoodPlaceDetail extends AsyncTask<String, Void, FoodPlaceDetailViewModel> {

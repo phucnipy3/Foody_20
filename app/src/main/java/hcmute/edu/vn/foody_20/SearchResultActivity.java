@@ -35,7 +35,7 @@ public class SearchResultActivity extends AppCompatActivity {
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
 
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences("currentprovincename",MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
 
         lstResult = (ListView) findViewById(R.id.lstResult);
@@ -55,7 +55,7 @@ public class SearchResultActivity extends AppCompatActivity {
         int pageIndex = 0;
         //Query cho quán ăn full thông tin
         String searchString = "";
-        int provinceID = 1;
+        int provinceID = GetProvinceID();
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
         if(!searchString.equals("") && !searchString.equals(null)){
             query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
@@ -115,5 +115,10 @@ public class SearchResultActivity extends AppCompatActivity {
             foodPlaceArrayList.add(foodPlaceFullViewModel);
         }
         foodPlaceFullViewAdapter.notifyDataSetChanged();
+    }
+    public int GetProvinceID(){
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
+        return sharedPreferences.getInt("currentprovinceid",1);
     }
 }

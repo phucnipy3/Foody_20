@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public String GetProvinceName(){
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences("currentprovincename",MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         return sharedPreferences.getString("currentprovincename","Hồ Chí Minh");
     }
 }
