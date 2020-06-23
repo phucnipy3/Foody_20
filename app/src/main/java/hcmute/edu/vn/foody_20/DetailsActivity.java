@@ -7,11 +7,15 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,7 +58,8 @@ public class DetailsActivity extends AppCompatActivity {
     private List<FoodViewModel> lstFood;
     private FoodViewAdapter myFoodAdapter;
 
-
+    Button btnBackDetails;
+    ConstraintLayout lineMenu,lineWifi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +68,10 @@ public class DetailsActivity extends AppCompatActivity {
         geocoder = new Geocoder(this, Locale.getDefault());
         client = LocationServices.getFusedLocationProviderClient(this);
         GetMyLocation();
+
+        lineMenu = findViewById(R.id.lineMenu);
+        lineWifi = findViewById(R.id.lineWifi);
+        btnBackDetails = findViewById(R.id.btnBackDetails);
         tvAddress = (TextView) findViewById(R.id.tvAddress);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
         tvType = (TextView) findViewById(R.id.tvType);
@@ -73,6 +82,27 @@ public class DetailsActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
+
+        lineMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DetailsActivity.this,MenuActivity.class));
+            }
+        });
+
+        lineWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    // inflate your layout
+                    View myPopupView = getLayoutInflater().inflate(R.layout.dialog_add_wifi, null);
+                    // Create the popup window; decide on the layout parameters
+                    PopupWindow myPopupWindow = new PopupWindow(myPopupView, ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                    // find and initialize your TextView(s), EditText(s) and Button(s); setup their behavior
+                    // display your popup window
+                    myPopupWindow.showAtLocation(myPopupView, Gravity.CENTER, 0, 0);
+            }
+        });
+
         tvContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,13 +115,17 @@ public class DetailsActivity extends AppCompatActivity {
                             101);
                     return;
                 }
-                
                 startActivity(intent);
-
             }
-
-
         });
+
+        btnBackDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         // query;
         int id = 0;
         if(getIntent().getExtras()!=null) {

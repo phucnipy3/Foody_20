@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/bgr_dialog"
+        android:padding="15dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,11 +21,9 @@
             android:text="Thêm hoặc cập nhật wifi"
             android:textColor="#275"
             android:textSize="30dp" />
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bgr_edt"
             android:drawableLeft="@drawable/icn_wifi_edt"
@@ -33,7 +33,6 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bgr_edt"
             android:drawableLeft="@drawable/icn_pwd_edt"

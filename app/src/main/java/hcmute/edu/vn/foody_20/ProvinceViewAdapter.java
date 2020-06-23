@@ -60,7 +60,7 @@ public class ProvinceViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView =inflater.inflate(layout,null);
-            holder.txtProvinceName = (TextView) convertView.findViewById(R.id.txtName);
+            holder.txtProvinceName = (TextView) convertView.findViewById(R.id.txtNameProvince);
             convertView.setTag(holder);
             holder.txtProvinceName.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -49,7 +49,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
         provinceTempArrayList = new ArrayList<>();
-        provinceAdapter = new ProvinceViewAdapter(this,R.layout.line_province,provinceArrayList,GetCurrentProvince());
+        provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList,GetCurrentProvince());
         lstProvinces.setAdapter(provinceAdapter);
 
         GetDataProvince();
