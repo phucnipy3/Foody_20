@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.sql.Connection;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private List<FoodPlaceCardViewModel> lstFoodPlace;
     private FoodPlaceCardViewAdapter myFoodPlaceAdapter;
     private EditText edtSearch;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
 
-
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         txtProvinces.setText(GetProvinceName());
         edtSearch = (EditText) findViewById(R.id.edtSearch);
         edtSearch.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels) {
             super.onPostExecute(foodPlaceCardViewModels);
-
+            progressBar.setVisibility(View.GONE);
             SetFoodPlaceCards(foodPlaceCardViewModels);
         }
     }
