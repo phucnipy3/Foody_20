@@ -15,12 +15,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <Button
+            android:id="@+id/btnBackDetails"
             android:layout_width="20dp"
             android:layout_height="30dp"
             android:background="@drawable/icn_back"
             android:layout_margin="10dp"/>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -277,7 +277,7 @@
     </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/menu"
+        android:id="@+id/lineMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -286,7 +286,7 @@
         app:layout_constraintTop_toBottomOf="@+id/profit">
 
         <ImageView
-            android:id="@+id/img4"
+            android:id="@+id/imgMenu"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="12dp"
@@ -295,27 +295,27 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thực đơn"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/img4"
+            app:layout_constraintLeft_toRightOf="@+id/imgMenu"
             android:textColor="#000"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/wifi"
+        android:id="@+id/lineWifi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="#fff"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu">
+        app:layout_constraintTop_toBottomOf="@+id/lineMenu">
 
         <ImageView
-            android:id="@+id/img5"
+            android:id="@+id/imgWifi"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="12dp"
@@ -324,17 +324,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvWifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thêm wifi"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/img5"
+            app:layout_constraintLeft_toRightOf="@+id/imgWifi"
             android:textColor="#000"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tvEnterPass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
@@ -349,5 +349,5 @@
         android:id="@+id/recyclerviewFood_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/wifi" />
+        app:layout_constraintTop_toBottomOf="@+id/lineWifi" />
 </androidx.constraintlayout.widget.ConstraintLayout>
