@@ -3,6 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
+        android:id="@+id/imgFoodPlaceResult"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_margin="5dp"
@@ -85,15 +86,15 @@
                         android:textColor="#000"
                         android:text="Quán ăn"
                         />
+
                     <TextView
                         android:id="@+id/txtCmt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:layout_toLeftOf="@+id/txtPhoto"
                         android:drawableLeft="@drawable/icn_comment"
-                        android:layout_marginRight="5dp"
-                        android:text="256"
-                        />
+                        android:text="256" />
                     <TextView
                         android:id="@+id/txtPhoto"
                         android:layout_width="wrap_content"
@@ -103,13 +104,14 @@
                         android:text="494"
                         />
                 </RelativeLayout>
-             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/icon_now"
-            android:textColor="#000"
-            android:text="   Nhập 'KHANGLD' nhận giảm 20k"
-            />
+
+                <TextView
+                    android:id="@+id/txtDiscount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/icon_now"
+                    android:text="   Nhập 'KHANGLD' nhận giảm 20k"
+                    android:textColor="#000" />
             </LinearLayout>
     </LinearLayout>
     </LinearLayout>

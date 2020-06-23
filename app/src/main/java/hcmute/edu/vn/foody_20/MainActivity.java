@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.sql.Connection;
@@ -23,7 +24,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private TextView txtProvinces;
     private List<FoodPlaceCardViewModel> lstFoodPlace;
-    FoodPlaceCardViewAdapter myFoodPlaceAdapter;
+    private FoodPlaceCardViewAdapter myFoodPlaceAdapter;
+    private EditText edtSearch;
 
 
     @Override
@@ -34,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         txtProvinces.setText(GetProvinceName());
+        edtSearch = (EditText) findViewById(R.id.edtSearch);
+        edtSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,SearchResultActivity.class));
+            }
+        });
 
         txtProvinces.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,16 +64,16 @@ public class MainActivity extends AppCompatActivity {
         int pageIndex = 0;
         new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
         myFoodPlaceAdapter.notifyDataSetChanged();
-//        // Query cho quán ăn full thông tin
-//        String searchString = "";
-//        int provinceID = 1;
-//        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
-//        if(!searchString.equals("") && !searchString.equals(null)){
-//            query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
-//        }
-//        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
-//        query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
-//        new GetFoodPlaceFull().execute(query);
+        //Query cho quán ăn full thông tin
+        String searchString = "";
+        int provinceID = 1;
+        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
+        if(!searchString.equals("") && !searchString.equals(null)){
+            query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
+        }
+        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
+        query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
+        new GetFoodPlaceFull().execute(query);
 
     }
     private class GetFoodPlaceCardAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceCardViewModel>>{

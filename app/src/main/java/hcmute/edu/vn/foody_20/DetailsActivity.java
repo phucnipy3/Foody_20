@@ -1,5 +1,6 @@
 package hcmute.edu.vn.foody_20;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -161,11 +162,11 @@ public class DetailsActivity extends AppCompatActivity {
         try {
             tvAddress.setText(foodPlaceDetailViewModel.getAddress());
             tvType.setText(foodPlaceDetailViewModel.getType());
-            tvPrice.setText(foodPlaceDetailViewModel.getMinPrice() + " - " + foodPlaceDetailViewModel.getMaxPrice());
+            tvPrice.setText(new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMinPrice())+"đ" + " - " + new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMaxPrice()) +"đ");
             tvProvinceName.setText(foodPlaceDetailViewModel.getProvinceName());
             tvTime.setText(foodPlaceDetailViewModel.getOpenTime().toString().substring( 0, 5 ) + " - " + foodPlaceDetailViewModel.getCloseTime().toString().substring( 0, 5 ));
             tvFoodPlaceName.setText(foodPlaceDetailViewModel.getName());
-            tvDistance.setText(Distance(foodPlaceDetailViewModel.getAddress()));
+            tvDistance.setText(Distance(foodPlaceDetailViewModel.getAddress()).replace(",","."));
             int opentimeFomartted = Integer.parseInt(foodPlaceDetailViewModel.getOpenTime().toString().substring(0,5).replaceAll(":",""));
             int closetimeFomartted = Integer.parseInt(foodPlaceDetailViewModel.getCloseTime().toString().substring(0,5).replaceAll(":",""));
             int timesystemFomartted = Integer.parseInt(GetTimeSystem());
@@ -219,14 +220,14 @@ public class DetailsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<FoodViewModel> foodViewModels) {
             super.onPostExecute(foodViewModels);
-            SetFoodsWithImage(foodViewModels);
+            SetFoodWithImage(foodViewModels);
 
         }
     }
 
-    public void SetFoodsWithImage(ArrayList<FoodViewModel> foodViewModels)
+    public void SetFoodWithImage(ArrayList<FoodViewModel> foodViewModels)
     {
-        lstFood.clear();
+
         for (FoodViewModel foodViewModel: foodViewModels
         ) {
             lstFood.add(foodViewModel);
