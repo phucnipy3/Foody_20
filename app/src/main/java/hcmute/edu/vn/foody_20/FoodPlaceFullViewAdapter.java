@@ -83,7 +83,7 @@ public class FoodPlaceFullViewAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView =inflater.inflate(layout,null);
             holder.imgFoodPlaceResult = (ImageView) convertView.findViewById(R.id.imgFoodPlaceResult);
-            holder.txtName =(TextView) convertView.findViewById(R.id.txtName);
+            holder.txtName =(TextView) convertView.findViewById(R.id.txtNameResult);
             holder.txtRate =(TextView) convertView.findViewById(R.id.txtRate);
             holder.txtAddress =(TextView) convertView.findViewById(R.id.txtAddress);
             holder.txtS =(TextView) convertView.findViewById(R.id.txtS);
