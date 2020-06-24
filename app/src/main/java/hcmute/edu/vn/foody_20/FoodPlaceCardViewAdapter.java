@@ -31,10 +31,11 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<FoodPlaceCard
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view;
-        LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.main_item,parent,false);
-        return new MyViewHolder(view);
+            View view;
+            LayoutInflater mInflater = LayoutInflater.from(mContext);
+            view = mInflater.inflate(R.layout.main_item,parent,false);
+            return new MyViewHolder(view);
+
     }
 
     @Override
@@ -55,7 +56,7 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<FoodPlaceCard
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return  mData.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

@@ -4,30 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#f00"
-            android:padding="8dp"
-            >
+            android:padding="8dp">
+
             <EditText
                 android:id="@+id/edtSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_bgr"
                 android:drawableLeft="@drawable/icn_search"
-                android:padding="5dp"
-                android:hint="Tìm địa điểm, món ăn, địa chỉ..."
                 android:drawableRight="@drawable/btn_bgr"
-                />
+                android:hint="Tìm địa điểm, món ăn, địa chỉ..."
+                android:padding="5dp" />
 
             <TextView
                 android:id="@+id/txtProvinces"
@@ -43,13 +43,14 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewFoodPlace_id"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="207dp"></androidx.recyclerview.widget.RecyclerView>
+
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/progress_bar_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="visible" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

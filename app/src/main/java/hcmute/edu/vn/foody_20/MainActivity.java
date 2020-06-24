@@ -1,18 +1,22 @@
 package hcmute.edu.vn.foody_20;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private FoodPlaceCardViewAdapter myFoodPlaceAdapter;
     private EditText edtSearch;
     private ProgressBar progressBar;
+    private RecyclerView rcvFoodPlace;
+    private boolean isLoading = false;
+    int pageIndex = 0;
 
 
     @Override
@@ -36,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtProvinces = findViewById(R.id.txtProvinces);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
         txtProvinces.setText(GetProvinceName());
         edtSearch = (EditText) findViewById(R.id.edtSearch);
         edtSearch.setOnClickListener(new View.OnClickListener() {
@@ -56,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         lstFoodPlace = new ArrayList<>();
-        RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
+        rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
         myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
         rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
         rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
-
+        initScrollListener();
         // Lấy trang đầu tiên là 10 thằng;
         // load more thì tăng pageIndex lên;
-        int pageIndex = 0;
+
         new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
         myFoodPlaceAdapter.notifyDataSetChanged();
         //Query cho quán ăn full thông tin
@@ -79,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private class GetFoodPlaceCardAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceCardViewModel>>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            isLoading=true;
+        }
 
         @Override
         protected ArrayList<FoodPlaceCardViewModel> doInBackground(String... strings) {
@@ -113,8 +127,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels) {
             super.onPostExecute(foodPlaceCardViewModels);
-            progressBar.setVisibility(View.GONE);
+            //progressBar.setVisibility(View.INVISIBLE);
             SetFoodPlaceCards(foodPlaceCardViewModels);
+            isLoading =false;
         }
     }
     private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>>{
@@ -163,9 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void SetFoodPlaceCards(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels){
-        // Tạo cái array list rồi add vô như bên Choose province
-        // t làm load 1 lần 10 cái
-        // có view more thì thay đổi tham số câu query rồi add vô, đừng clear cái list
+
         for (FoodPlaceCardViewModel foodPlaceCardViewModel: foodPlaceCardViewModels
         ) {
             lstFoodPlace.add(foodPlaceCardViewModel);
@@ -181,4 +194,38 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         return sharedPreferences.getString("currentprovincename","Hồ Chí Minh");
     }
+
+    private void initScrollListener() {
+        rcvFoodPlace.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (!isLoading) {
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == lstFoodPlace.size() - 1) {
+                        loadMore();
+                    }
+                }
+
+            }
+        });
+
+
+    }
+
+    private void loadMore() {
+
+        pageIndex++;
+        new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
+
+
+    }
 }
+

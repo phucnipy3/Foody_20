@@ -10,8 +10,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.sql.Connection;
@@ -30,6 +32,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     String tempProvinceName;
     Integer tempId;
     Intent intentProvince;
+    ProgressBar progressBar;
 
 
 
@@ -43,9 +46,10 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         intentProvince = new Intent(ChooseProvincesActivity.this,MainActivity.class);
 
 
-        btnCancel = findViewById(R.id.btnCancel);
-        btnDone = findViewById(R.id.btnDone);
-        edtSearch = findViewById(R.id.edtSearch);
+        btnCancel = (TextView) findViewById(R.id.btnCancel);
+        btnDone = (TextView) findViewById(R.id.btnDone);
+        edtSearch = (EditText) findViewById(R.id.edtSearch);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_province);
 
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
@@ -159,6 +163,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Province> provinces) {
             super.onPostExecute(provinces);
+            progressBar.setVisibility(View.GONE);
             SetProvinces(provinces);
         }
     }

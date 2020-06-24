@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +28,14 @@ public class SearchResultActivity extends AppCompatActivity {
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
     private ListView lstResult;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
         tvProvinces =(TextView) findViewById(R.id.tvProvinces);
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
-
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
@@ -107,6 +109,7 @@ public class SearchResultActivity extends AppCompatActivity {
             super.onPostExecute(foodPlaceFullViewModels);
 
             SetFoodPlaceFull(foodPlaceFullViewModels);
+            progressBar.setVisibility(View.GONE);
         }
     }
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){

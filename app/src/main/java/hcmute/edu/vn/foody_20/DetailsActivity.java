@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
     private List<Address> foodplaceaddresses;
     private String contact = "";
+    private ProgressBar progressBar;
 
     private List<FoodViewModel> lstFood;
     private FoodViewAdapter myFoodAdapter;
@@ -83,6 +85,7 @@ public class DetailsActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_details);
 
         lineMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +190,7 @@ public class DetailsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(FoodPlaceDetailViewModel foodPlaceDetailViewModel) {
             super.onPostExecute(foodPlaceDetailViewModel);
-
+            progressBar.setVisibility(View.GONE);
             SetFoodPlaceDetail(foodPlaceDetailViewModel);
         }
     }
