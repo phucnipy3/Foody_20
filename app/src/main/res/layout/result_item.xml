@@ -7,7 +7,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_margin="5dp"
-        android:src="@drawable/bundau01"
+        android:src="@drawable/bgr_noimage"
         android:scaleType="fitXY"
         />
     <LinearLayout

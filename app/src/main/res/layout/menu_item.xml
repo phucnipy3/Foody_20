@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card_view_food_id">
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/imgFood"
-            android:layout_width="200dp"
-            android:layout_height="119dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/bundau01"
-
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="233:144"
+            android:src="@drawable/bgr_noimage"
             />
 
         <TextView
+            app:layout_constraintTop_toBottomOf="@+id/imgFood"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/tvDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +30,7 @@
             android:textColor="#444"
             android:textSize="18dp"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

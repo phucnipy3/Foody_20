@@ -69,9 +69,12 @@
             android:layout_marginHorizontal="10dp"></ListView>
         <ProgressBar
             android:id="@+id/progress_bar_province"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/pgb_1"
+            android:indeterminateDuration="@android:integer/config_longAnimTime"
+            />
     </LinearLayout>
 
 

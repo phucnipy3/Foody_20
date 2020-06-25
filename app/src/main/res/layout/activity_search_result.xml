@@ -120,7 +120,10 @@
             android:id="@+id/progress_bar_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/pgb_1"
+            android:indeterminateDuration="@android:integer/config_longAnimTime"
+            />
     <ListView
         android:id="@+id/lstResult"
         android:layout_width="match_parent"

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card_view_id">
     <LinearLayout
@@ -8,22 +10,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="5dp">
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:scaleType="fitXY"
+        android:layout_height="wrap_content"
         >
-
         <ImageView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/imgFoodPlace"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp"
-            android:background="@drawable/bundau01"
-            android:scaleType="fitXY" />
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="233:144"
+            android:src="@drawable/bgr_noimage"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/tvReviewed"
@@ -35,11 +35,11 @@
             android:text="Review"
             android:textColor="#fff"
             android:textStyle="bold"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="20dp"
             />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
         android:id="@+id/tvFPName"
         android:layout_width="match_parent"
