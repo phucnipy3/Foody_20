@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Foody_20</string>
     <string name="connection">jdbc:jtds:sqlserver://Nhom20FoodyDB.mssql.somee.com/Nhom20FoodyDB;user=phucni;password=12345678</string>
+    <string name="share_key">app_share_key</string>
+    <string name="key_province_name">province_name</string>
+    <string name="key_province_id">province_id</string>
+    <string name="default_province_name">Hồ Chí Minh</string>
+    <integer name="default_province_id">1</integer>
 </resources>

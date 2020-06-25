@@ -1,7 +1,6 @@
 package hcmute.edu.vn.foody_20;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -69,8 +67,7 @@ public class MenuActivity extends AppCompatActivity {
             Intent intent = getIntent();
             id = intent.getExtras().getInt("idFoodPlace");
         }
-        String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
-        new MenuActivity.GetFood().execute(queryFood);
+        new GetFoodAsync(id).execute();
 
         btnBackMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,16 +94,17 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
-    private class GetFood extends AsyncTask<String, Void, ArrayList<FoodViewModel>> {
+    private class GetFoodAsync extends AsyncTask<Integer, Void, ArrayList<FoodViewModel>> {
+        int id;
+
+        public GetFoodAsync(int foodPlaceId) {
+            this.id = foodPlaceId;
+        }
 
         @Override
-        protected ArrayList<FoodViewModel> doInBackground(String... strings) {
-            String query = "select * from FoodInMenu";
+        protected ArrayList<FoodViewModel> doInBackground(Integer... ints) {
+            String query = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
 
-            if(strings.length > 0)
-            {
-                query = strings[0];
-            }
             ArrayList<FoodViewModel> foodViewModels = new ArrayList<>();
             try  {
                 // Set the connection string
@@ -115,14 +113,14 @@ public class MenuActivity extends AppCompatActivity {
                 Statement stmt = DBconn.createStatement();
                 ResultSet resultSet = stmt.executeQuery(query);
                 while(resultSet.next()){
-                    int id = resultSet.getInt("Id");
+                    int idFood = resultSet.getInt("Id");
                     String foodName = resultSet.getString("FoodName");
                     BigDecimal price = resultSet.getBigDecimal("Price");
                     String foodImage = resultSet.getString("FoodImage");
                     int foodPlaceId = resultSet.getInt("FoodPlaceId");
                     int typeId = resultSet.getInt("TypeId");
                     String typeName = resultSet.getString("TypeName");
-                    foodViewModels.add(new FoodViewModel(id,foodName,price,foodImage,foodPlaceId,typeId,typeName));
+                    foodViewModels.add(new FoodViewModel(idFood,foodName,price,foodImage,foodPlaceId,typeId,typeName));
                 }
                 DBconn.close();
             } catch (Exception e) {

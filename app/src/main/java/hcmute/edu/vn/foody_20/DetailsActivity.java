@@ -1,6 +1,5 @@
 package hcmute.edu.vn.foody_20;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -158,23 +156,23 @@ public class DetailsActivity extends AppCompatActivity {
         rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
         rcvFoodPlace.setAdapter(myFoodAdapter);
 
-        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
-        new GetFoodPlaceDetail().execute(query);
+        new GetFoodPlaceDetailAsync(id).execute();
 
-        String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
-         new GetFoodWithImage().execute(queryFood);
+         new GetFoodWithImageAsync(id).execute();
+         // wifi là wifi view model, lấy đc wifi bỏ vô là chạy đc
+         //new AddOrUpdateWifiAsync(wifi).execute();
     }
 
-    private class GetFoodPlaceDetail extends AsyncTask<String, Void, FoodPlaceDetailViewModel> {
+    private class GetFoodPlaceDetailAsync extends AsyncTask<Void, Void, FoodPlaceDetailViewModel> {
+
+        int id;
+        public GetFoodPlaceDetailAsync(int foodPlaceId) {
+            this.id = foodPlaceId;
+        }
 
         @Override
-        protected FoodPlaceDetailViewModel doInBackground(String... strings) {
-            String query = "select * from FoodPlace where id = 1";
-
-            if(strings.length > 0)
-            {
-                query = strings[0];
-            }
+        protected FoodPlaceDetailViewModel doInBackground(Void... voids) {
+            String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
             FoodPlaceDetailViewModel foodPlaceDetailViewModel = new FoodPlaceDetailViewModel();
             try  {
                 // Set the connection string
@@ -183,7 +181,7 @@ public class DetailsActivity extends AppCompatActivity {
                 Statement stmt = DBconn.createStatement();
                 ResultSet resultSet = stmt.executeQuery(query);
                 if(resultSet.next()){
-                    int id = resultSet.getInt("Id");
+                    int foodPlaceId = resultSet.getInt("Id");
                     String name = resultSet.getString("Name");
                     String address = resultSet.getString("Address");
                     String type = resultSet.getString("Type");
@@ -193,7 +191,7 @@ public class DetailsActivity extends AppCompatActivity {
                     BigDecimal minPrice= resultSet.getBigDecimal("MinPrice");
                     String contact = resultSet.getString("Contact");
                     String provinceName = resultSet.getString("ProvinceName");
-                    foodPlaceDetailViewModel = new FoodPlaceDetailViewModel(id,name,address,type,openTime,closeTime,minPrice,maxPrice,provinceName,contact);
+                    foodPlaceDetailViewModel = new FoodPlaceDetailViewModel(foodPlaceId,name,address,type,openTime,closeTime,minPrice,maxPrice,provinceName,contact);
                 }
                 DBconn.close();
             } catch (Exception e) {
@@ -201,6 +199,8 @@ public class DetailsActivity extends AppCompatActivity {
             }
             return foodPlaceDetailViewModel;
         }
+
+
 
         @Override
         protected void onPostExecute(FoodPlaceDetailViewModel foodPlaceDetailViewModel) {
@@ -236,16 +236,16 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
-    private class GetFoodWithImage extends AsyncTask<String, Void, ArrayList<FoodViewModel>>{
+    private class GetFoodWithImageAsync extends AsyncTask<Void, Void, ArrayList<FoodViewModel>>{
+        int id;
+
+        public GetFoodWithImageAsync(int foodPlaceId) {
+            this.id = foodPlaceId;
+        }
 
         @Override
-        protected ArrayList<FoodViewModel> doInBackground(String... strings) {
-            String query = "select * from FoodInMenu";
-
-            if(strings.length > 0)
-            {
-                query = strings[0];
-            }
+        protected ArrayList<FoodViewModel> doInBackground(Void... voids) {
+            String query = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
             ArrayList<FoodViewModel> foodViewModels = new ArrayList<>();
             try  {
                 // Set the connection string
@@ -254,14 +254,14 @@ public class DetailsActivity extends AppCompatActivity {
                 Statement stmt = DBconn.createStatement();
                 ResultSet resultSet = stmt.executeQuery(query);
                 while(resultSet.next()){
-                    int id = resultSet.getInt("Id");
+                    int foodId = resultSet.getInt("Id");
                     String foodName = resultSet.getString("FoodName");
                     BigDecimal price = resultSet.getBigDecimal("Price");
                     String foodImage = resultSet.getString("FoodImage");
                     int foodPlaceId = resultSet.getInt("FoodPlaceId");
                     int typeId = resultSet.getInt("TypeId");
                     String typeName = resultSet.getString("TypeName");
-                    foodViewModels.add(new FoodViewModel(id,foodName,price,foodImage,foodPlaceId,typeId,typeName));
+                    foodViewModels.add(new FoodViewModel(foodId,foodName,price,foodImage,foodPlaceId,typeId,typeName));
                 }
                 DBconn.close();
             } catch (Exception e) {
@@ -334,5 +334,33 @@ public class DetailsActivity extends AppCompatActivity {
         return formattedDate.replaceAll(":","");
 
     }
+    private class AddOrUpdateWifiAsync extends AsyncTask<Void, Void, Boolean> {
+        WifiViewModel wifi;
 
+        public AddOrUpdateWifiAsync(WifiViewModel wifi) {
+            this.wifi = wifi;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                // Set the connection string
+                Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+                Connection DBconn = DriverManager.getConnection(getString(R.string.connection));
+                Statement stmt = DBconn.createStatement();
+                ResultSet resultSet = stmt.executeQuery("select count(*) Count from Wifi where Wifi.WifiName = '"+wifi.getName()+"' and Wifi.FoodPlaceId = '"+ wifi.getFoodPlaceId() +"'");
+                resultSet.next();
+                int count = resultSet.getInt("Count");
+                if(count == 0)
+                    stmt.execute("insert into Wifi(WifiName, WifiPassword, FoodPlaceId) values('"+wifi.getName()+"', '"+wifi.getPassword()+"', "+wifi.getFoodPlaceId()+")");
+                else
+                    stmt.execute("update Wifi set Wifi.WifiPassword = "+ wifi.getPassword() +" where Wifi.WifiName = '"+wifi.getName()+"' and Wifi.FoodPlaceId = '"+ wifi.getFoodPlaceId()+"'");
+                DBconn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+    }
 }

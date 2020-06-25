@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,22 +28,16 @@ public class ChooseProvincesActivity extends AppCompatActivity {
     ArrayList<Province> provinceArrayList;
     ArrayList<Province> provinceTempArrayList;
     ProvinceViewAdapter provinceAdapter;
-    String tempProvinceName;
-    Integer tempId;
+    String selectedProvinceName;
+    Integer selectedProvinceId;
     Intent intentProvince;
     ProgressBar progressBar;
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_provinces);
         intentProvince = new Intent(ChooseProvincesActivity.this,MainActivity.class);
-
 
         btnCancel = (TextView) findViewById(R.id.btnCancel);
         btnDone = (TextView) findViewById(R.id.btnDone);
@@ -54,10 +47,10 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
         provinceTempArrayList = new ArrayList<>();
-        provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList,GetCurrentProvince());
+        provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList, GetSelectedProvince());
         lstProvinces.setAdapter(provinceAdapter);
 
-        GetDataProvince();
+        new GetProvincesAsync().execute();
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +64,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentProvince);
-                SaveProvinceName();
+                SaveProvince();
                 finish();
             }
         });
@@ -108,30 +101,24 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         });
 
     }
-    public void GetDataProvince(){
 
-        new GetProvinceAsync().execute();
-
-        provinceAdapter.notifyDataSetChanged();
-
-    }
-
-    public void SaveProvinceName(){
+    public void SaveProvince(){
         SharedPreferences sharedPreferencesProvince ;
-        sharedPreferencesProvince = getSharedPreferences("currentprovince",MODE_PRIVATE);
+        sharedPreferencesProvince = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         SharedPreferences.Editor editor =sharedPreferencesProvince.edit();
-        editor.putString("currentprovincename",tempProvinceName);
-        editor.putInt("currentprovinceid",tempId);
+        editor.putString(getString(R.string.key_province_name), selectedProvinceName);
+        editor.putInt(getString(R.string.key_province_id), selectedProvinceId);
         editor.commit();
 
     }
 
-    public String GetCurrentProvince(){
-        Intent intent =getIntent();
-        return intent.getExtras().getString("CurrentProvince");
+    public String GetSelectedProvince(){
+        SharedPreferences sharedPreferencesProvince ;
+        sharedPreferencesProvince = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        return sharedPreferencesProvince.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
     }
 
-    private class GetProvinceAsync extends AsyncTask<String, Void, ArrayList<Province>>{
+    private class GetProvincesAsync extends AsyncTask<String, Void, ArrayList<Province>>{
 
         @Override
         protected ArrayList<Province> doInBackground(String... queries) {
@@ -178,8 +165,8 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         provinceAdapter.notifyDataSetChanged();
     }
     public void SendTempProvinceName(String name, Integer id){
-        tempProvinceName =name;
-        tempId =id;
+        selectedProvinceName = name;
+        selectedProvinceId = id;
     }
 
 

@@ -10,19 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rcvFoodPlace;
     private boolean isLoading = false;
     int pageIndex = 0;
-
+    int pageSize = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         txtProvinces = findViewById(R.id.txtProvinces);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
-        txtProvinces.setText(GetProvinceName());
+        txtProvinces.setText(GetSelectedProvinceName());
         edtSearch = (EditText) findViewById(R.id.edtSearch);
         edtSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,ChooseProvincesActivity.class);
-                intent.putExtra("CurrentProvince",txtProvinces.getText());
                 startActivity(intent);
 
             }
@@ -76,15 +71,18 @@ public class MainActivity extends AppCompatActivity {
             rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
         }
         initScrollListener();
-        // Lấy trang đầu tiên là 10 thằng;
-        // load more thì tăng pageIndex lên;
 
-        new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
-        myFoodPlaceAdapter.notifyDataSetChanged();
-
+        new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
 
     }
-    private class GetFoodPlaceCardAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceCardViewModel>>{
+    private class GetFoodPlaceCardAsync extends AsyncTask<Void, Void, ArrayList<FoodPlaceCardViewModel>>{
+        int pageIndex;
+        int pageSize;
+
+        public GetFoodPlaceCardAsync(int pageIndex, int pageSize) {
+            this.pageIndex = pageIndex;
+            this.pageSize = pageSize;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -97,13 +95,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<FoodPlaceCardViewModel> doInBackground(String... strings) {
-            String query = "select Id, Name, Image, ReviewContent from FoodPlace";
-
-            if(strings.length > 0)
-            {
-                query = strings[0];
-            }
+        protected ArrayList<FoodPlaceCardViewModel> doInBackground(Void... voids) {
+            String query = "select Id, Name, Image, ReviewContent from FoodPlace where FoodPlace.ProvinceId = " + GetSelectedProvinceId() + " order by Id offset "+ String.valueOf(pageIndex * pageSize)+" rows fetch next " + pageSize + " row only";
             ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels = new ArrayList<>();
             try  {
                 // Set the connection string
@@ -146,13 +139,15 @@ public class MainActivity extends AppCompatActivity {
         myFoodPlaceAdapter.notifyDataSetChanged();
     }
 
-    public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
-        // Tương tự
-    }
-    public String GetProvinceName(){
+    public String GetSelectedProvinceName(){
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
-        return sharedPreferences.getString("currentprovincename","Hồ Chí Minh");
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        return sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
+    }
+    public int GetSelectedProvinceId(){
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        return sharedPreferences.getInt(getString(R.string.key_province_id),getResources().getInteger(R.integer.default_province_id));
     }
 
     private void initScrollListener() {
@@ -180,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMore() {
         pageIndex++;
-        new GetFoodPlaceCardAsync().execute("select Id, Name, Image, ReviewContent from FoodPlace order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only");
+        new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
     }
 }
 

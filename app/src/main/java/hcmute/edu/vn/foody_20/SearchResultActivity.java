@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,8 +45,8 @@ public class SearchResultActivity extends AppCompatActivity {
         btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
-        tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        tvProvinces.setText(sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name)));
 
         lstResult = (ListView) findViewById(R.id.lstResult);
 
@@ -69,7 +68,7 @@ public class SearchResultActivity extends AppCompatActivity {
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
         query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
         query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
-        new SearchResultActivity.GetFoodPlaceFull().execute(query);
+        new GetFoodPlaceFullAsync().execute(query);
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -103,7 +102,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
 
     }
-    private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
+    private class GetFoodPlaceFullAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
 
         @Override
         protected ArrayList<FoodPlaceFullViewModel> doInBackground(String... strings) {
@@ -159,8 +158,8 @@ public class SearchResultActivity extends AppCompatActivity {
     }
     public int GetProvinceID(){
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
-        return sharedPreferences.getInt("currentprovinceid",1);
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        return sharedPreferences.getInt(getString(R.string.key_province_id), getResources().getInteger(R.integer.default_province_id));
     }
 
 }
