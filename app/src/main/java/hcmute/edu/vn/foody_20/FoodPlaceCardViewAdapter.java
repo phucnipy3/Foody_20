@@ -85,11 +85,11 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
+        ProgressBar progressBar;
 
         public LoadingViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imgLoading);
+            progressBar = itemView.findViewById(R.id.progressBarLoading);
         }
     }
     private void showLoadingView(LoadingViewHolder viewHolder, int position) {

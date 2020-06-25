@@ -64,9 +64,17 @@ public class MainActivity extends AppCompatActivity {
         });
         lstFoodPlace = new ArrayList<>();
         rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
-        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
-        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
-        rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
+        if(lstFoodPlace.size()>0  && lstFoodPlace.get(lstFoodPlace.size()-1)==null)
+        {
+            myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
+            rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
+            rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
+        }
+        else {
+            myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
+            rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
+            rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
+        }
         initScrollListener();
         // Lấy trang đầu tiên là 10 thằng;
         // load more thì tăng pageIndex lên;

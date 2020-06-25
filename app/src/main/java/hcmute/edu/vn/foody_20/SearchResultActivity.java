@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -26,9 +28,12 @@ public class SearchResultActivity extends AppCompatActivity {
     private TextView tvProvinces;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
+    private ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
     private ListView lstResult;
     private ProgressBar progressBar;
+    private TextView btnBestMatch,btnNearby,btnPopular,btnFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +41,10 @@ public class SearchResultActivity extends AppCompatActivity {
         tvProvinces =(TextView) findViewById(R.id.tvProvinces);
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
+        btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
+        btnNearby =(TextView) findViewById(R.id.btnNearby);
+        btnFilter =(TextView) findViewById(R.id.btnFilter);
+        btnPopular = (TextView) findViewById(R.id.btnPopular);
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
@@ -43,6 +52,7 @@ public class SearchResultActivity extends AppCompatActivity {
         lstResult = (ListView) findViewById(R.id.lstResult);
 
         foodPlaceArrayList = new ArrayList<>();
+        tempfoodPlaceArrayList = new ArrayList<>();
         foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,R.layout.result_item,foodPlaceArrayList);
         lstResult.setAdapter(foodPlaceFullViewAdapter);
         lstResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -54,17 +64,44 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
-        int pageIndex = 0;
-        //Query cho quán ăn full thông tin
-        String searchString = "";
+        int pageIndex =0;
         int provinceID = GetProvinceID();
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
-        if(!searchString.equals("") && !searchString.equals(null)){
-            query = query + "and FoodPlace.Name like '%"+searchString+"%' ";
-        }
         query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
         query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
         new SearchResultActivity.GetFoodPlaceFull().execute(query);
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int countFoodPlaceFound =0;
+                foodPlaceArrayList.clear();
+                for (int i = 0; i < tempfoodPlaceArrayList.size(); i++) {
+                    if (tempfoodPlaceArrayList.get(i).getName().toLowerCase().contains(s.toString().toLowerCase())) {
+                        foodPlaceArrayList.add(tempfoodPlaceArrayList.get(i));
+                        foodPlaceFullViewAdapter.notifyDataSetChanged();
+                        countFoodPlaceFound ++;
+                    }
+                }
+                if(countFoodPlaceFound<1){
+                    foodPlaceArrayList.clear();
+                    foodPlaceFullViewAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+
     }
     private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
 
@@ -116,6 +153,7 @@ public class SearchResultActivity extends AppCompatActivity {
         for (FoodPlaceFullViewModel foodPlaceFullViewModel: foodPlaceFullViewModels
         ) {
             foodPlaceArrayList.add(foodPlaceFullViewModel);
+            tempfoodPlaceArrayList.add(foodPlaceFullViewModel);
         }
         foodPlaceFullViewAdapter.notifyDataSetChanged();
     }
@@ -124,4 +162,5 @@ public class SearchResultActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         return sharedPreferences.getInt("currentprovinceid",1);
     }
+
 }

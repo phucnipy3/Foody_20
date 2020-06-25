@@ -39,7 +39,8 @@ public class FoodViewAdapter extends RecyclerView.Adapter<FoodViewAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tv_description.setText(mData.get(position).getFoodName() + " " + mData.get(position).getPrice()+"K");
+        int price = mData.get(position).getPrice().intValue()/1000;
+        holder.tv_description.setText(mData.get(position).getFoodName() + " " + price +"K");
         Picasso.get().load(mData.get(position).getFoodImage()).into(holder.img_food);
 
 
