@@ -13,9 +13,9 @@ import java.util.List;
 public class ExpandMenuAdapter extends BaseExpandableListAdapter {
     Context context;
     List<String> lstFoodKind;
-    HashMap<String,List<String>> lstFoodInKind;
+    HashMap<String,List<FoodViewModel>> lstFoodInKind;
 
-    public ExpandMenuAdapter(Context context, List<String> lstFoodKind, HashMap<String, List<String>> lstFoodInKind) {
+    public ExpandMenuAdapter(Context context, List<String> lstFoodKind, HashMap<String, List<FoodViewModel>> lstFoodInKind) {
         this.context = context;
         this.lstFoodKind = lstFoodKind;
         this.lstFoodInKind = lstFoodInKind;
@@ -70,13 +70,15 @@ public class ExpandMenuAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String food = (String) getChild(groupPosition,childPosition);
+        FoodViewModel food = (FoodViewModel) getChild(groupPosition,childPosition);
         if (convertView == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.foodinkind_items,null);
         }
-        TextView textView = convertView.findViewById(R.id.tvFoodMenu);
-        textView.setText(food);
+        TextView tvFoodInKind = convertView.findViewById(R.id.tvFoodMenu);
+        TextView tvFoodPrice = convertView.findViewById(R.id.tvFoodPriceMenu);
+        tvFoodInKind.setText(food.getFoodName().toString());
+        tvFoodPrice.setText(food.getPrice().intValue()+"đ");
         return convertView;
     }
 

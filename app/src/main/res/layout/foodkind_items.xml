@@ -11,6 +11,7 @@
         android:paddingVertical="10dp"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:background="#ddd"
+        android:textColor="#f83"
+        android:background="@drawable/bgr_foodkind"
         />
 </LinearLayout>

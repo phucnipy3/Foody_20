@@ -8,7 +8,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="10dp">
 
         <ImageView
             app:layout_constraintTop_toTopOf="parent"
@@ -18,6 +19,7 @@
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="233:144"
             android:src="@drawable/bgr_noimage"
+            android:scaleType="centerCrop"
             />
 
         <TextView
@@ -28,7 +30,8 @@
             android:layout_height="wrap_content"
             android:text="Mẹt xịn 200k"
             android:textColor="#444"
-            android:textSize="18dp"/>
+            android:textSize="25dp"
+            android:paddingVertical="5dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

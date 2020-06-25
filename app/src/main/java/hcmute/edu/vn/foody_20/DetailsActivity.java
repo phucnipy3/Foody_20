@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +63,7 @@ public class DetailsActivity extends AppCompatActivity {
     private FoodViewAdapter myFoodAdapter;
 
     Button btnBackDetails;
-    ConstraintLayout lineMenu,lineWifi;
+    ConstraintLayout lineMenu,lineWifi,maps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,11 +87,23 @@ public class DetailsActivity extends AppCompatActivity {
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_details);
+        maps = findViewById(R.id.maps);
+
+        maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(DetailsActivity.this, "Opening Google maps...", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         lineMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DetailsActivity.this,MenuActivity.class));
+                Intent intent = getIntent();
+                int fpID = intent.getExtras().getInt("idFoodPlace");
+                Intent intent1 = new Intent(DetailsActivity.this,MenuActivity.class);
+                intent1.putExtra("idFoodPlace",fpID);
+                startActivity(intent1);
             }
         });
 
@@ -138,11 +151,13 @@ public class DetailsActivity extends AppCompatActivity {
             id = intent.getExtras().getInt("idFoodPlace");
 
         }
+
         lstFood = new ArrayList<>();
         RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFood_id);
         myFoodAdapter = new FoodViewAdapter(this,lstFood);
         rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
         rcvFoodPlace.setAdapter(myFoodAdapter);
+
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
         new GetFoodPlaceDetail().execute(query);
 

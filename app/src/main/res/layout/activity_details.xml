@@ -137,24 +137,25 @@
                         android:indeterminateDrawable="@drawable/pgb_1"
                         android:indeterminateDuration="@android:integer/config_longAnimTime"
                         />
-
                 </RelativeLayout>
                 <ImageView
                     app:layout_constraintTop_toBottomOf="@+id/status"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:background="@drawable/bgr_noimage"/>
-                <LinearLayout
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="2:1"
+                    android:background="@drawable/bgr_location_ggmap"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/maps"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="2:1"
                     app:layout_constraintTop_toBottomOf="@+id/status"
                     android:orientation="vertical"
                     android:maxHeight="100dp"
                     android:background="@drawable/bgr_gradient"
                     >
                     <LinearLayout
-                        android:id="@+id/máp"
+                        android:id="@+id/maptitle1"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -229,6 +230,8 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/maptitle2"
+                        app:layout_constraintTop_toBottomOf="@id/maptitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -249,9 +252,11 @@
                         />
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/maptitle3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/maptitle2"
                         android:padding="8dp"
                         >
                         <TextView
@@ -268,7 +273,7 @@
                             android:textColor="#000"
                             />
                     </LinearLayout>
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
                 <RelativeLayout
                     android:id="@+id/profit"
                     android:layout_width="match_parent"

@@ -2,8 +2,11 @@ package hcmute.edu.vn.foody_20;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuAdapter;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Adapter;
@@ -12,6 +15,11 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +27,16 @@ import java.util.List;
 public class MenuActivity extends AppCompatActivity {
     LinearLayout btnChangeMenu;
     Button btnBackMenu;
-    RecyclerView rcvMenu;
+    RecyclerView rcvImageMenu;
     ExpandableListView eplMenu;
     TextView tvNameMenu,tvShowPicture,tvShowMenu;
 
+    private List<FoodViewModel> lstFood;
+
+    FoodViewAdapter ImgFoodAdapter;
     ExpandMenuAdapter adapter;
     List<String> lstFoodKind;
-    HashMap<String,List<String>> lstFoodInKind;
+    HashMap<String,List<FoodViewModel>> lstFoodInKind;
 
 
     @Override
@@ -35,7 +46,7 @@ public class MenuActivity extends AppCompatActivity {
 
         btnChangeMenu = findViewById(R.id.btnChangeMenu);
         btnBackMenu = findViewById(R.id.btnBackMenu);
-        rcvMenu = findViewById(R.id.rcvMenu);
+        rcvImageMenu = findViewById(R.id.rcvImageMenu);
         eplMenu = findViewById(R.id.eplMenu);
         tvNameMenu = findViewById(R.id.tvNameMenu);
         tvShowMenu = findViewById(R.id.tvShowMenu);
@@ -43,11 +54,23 @@ public class MenuActivity extends AppCompatActivity {
 
         lstFoodKind = new ArrayList<>();
         lstFoodInKind= new HashMap<>();
+        lstFood = new ArrayList<>();
 
         adapter = new ExpandMenuAdapter(this,lstFoodKind,lstFoodInKind);
         eplMenu.setAdapter(adapter);
 
-        initData();
+        rcvImageMenu = (RecyclerView) findViewById(R.id.rcvImageMenu);
+        ImgFoodAdapter = new FoodViewAdapter(this,lstFood);
+        rcvImageMenu.setLayoutManager(new GridLayoutManager(this,2));
+        rcvImageMenu.setAdapter(ImgFoodAdapter);
+
+        int id = 0;
+        if(getIntent().getExtras()!=null) {
+            Intent intent = getIntent();
+            id = intent.getExtras().getInt("idFoodPlace");
+        }
+        String queryFood = "select FoodInMenu.Id Id, FoodName, Price, FoodImage, FoodPlaceId, TypeId, FoodType TypeName from FoodInMenu, FoodType where FoodInMenu.TypeId = FoodType.Id and FoodPlaceId = "+String.valueOf(id);
+        new MenuActivity.GetFood().execute(queryFood);
 
         btnBackMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,29 +87,74 @@ public class MenuActivity extends AppCompatActivity {
                 tvShowPicture.setBackground(temp.getBackground());
 
                 if (tvShowMenu.getBackground() != null){
-                    rcvMenu.setVisibility(View.VISIBLE);
-                    eplMenu.setVisibility(View.INVISIBLE);
-                }else{
-                    rcvMenu.setVisibility(View.INVISIBLE);
+                    rcvImageMenu.setVisibility(View.INVISIBLE);
                     eplMenu.setVisibility(View.VISIBLE);
+                }else{
+                    rcvImageMenu.setVisibility(View.VISIBLE);
+                    eplMenu.setVisibility(View.INVISIBLE);
                 }
-
             }
         });
     }
 
-    private void initData() {
-        lstFoodKind.add("Trà sữa");
-        lstFoodKind.add("Cháo");
-        lstFoodKind.add("Bò nướng");
+    private class GetFood extends AsyncTask<String, Void, ArrayList<FoodViewModel>> {
 
-        for (int i=0;i<lstFoodKind.size();i++  ) {
-            List<String> lst = new ArrayList<>();
-            for (int j=1;j<5;j++) {
-                lst.add(lstFoodKind.get(i).toString() + " 0" + String.valueOf(j));
+        @Override
+        protected ArrayList<FoodViewModel> doInBackground(String... strings) {
+            String query = "select * from FoodInMenu";
+
+            if(strings.length > 0)
+            {
+                query = strings[0];
             }
-            lstFoodInKind.put(lstFoodKind.get(i).toString(),lst);
+            ArrayList<FoodViewModel> foodViewModels = new ArrayList<>();
+            try  {
+                // Set the connection string
+                Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+                Connection DBconn = DriverManager.getConnection(getString(R.string.connection));
+                Statement stmt = DBconn.createStatement();
+                ResultSet resultSet = stmt.executeQuery(query);
+                while(resultSet.next()){
+                    int id = resultSet.getInt("Id");
+                    String foodName = resultSet.getString("FoodName");
+                    BigDecimal price = resultSet.getBigDecimal("Price");
+                    String foodImage = resultSet.getString("FoodImage");
+                    int foodPlaceId = resultSet.getInt("FoodPlaceId");
+                    int typeId = resultSet.getInt("TypeId");
+                    String typeName = resultSet.getString("TypeName");
+                    foodViewModels.add(new FoodViewModel(id,foodName,price,foodImage,foodPlaceId,typeId,typeName));
+                }
+                DBconn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return foodViewModels;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<FoodViewModel> foodViewModels) {
+            super.onPostExecute(foodViewModels);
+            SetFood(foodViewModels);
+        }
+    }
+    public void SetFood(ArrayList<FoodViewModel> foodViewModels)
+    {
+        for (FoodViewModel foodViewModel: foodViewModels) {
+            lstFood.add(foodViewModel);
+        }
+        // get food kind
+        for (int i=0;i<lstFood.size();i++)
+            if (!lstFoodKind.contains(lstFood.get(i).getTypeName().toString()))
+                lstFoodKind.add(lstFood.get(i).getTypeName().toString());
+        // get food in kind
+        for (int j=0;j<lstFoodKind.size();j++){
+            List<FoodViewModel> tempList = new ArrayList<>();
+            for (int i=0;i<lstFood.size();i++)
+                if (lstFood.get(i).getTypeName().toString().equals(lstFoodKind.get(j).toString()))
+                    tempList.add(lstFood.get(i));
+            lstFoodInKind.put(lstFoodKind.get(j).toString(),tempList);
         }
         adapter.notifyDataSetChanged();
+        ImgFoodAdapter.notifyDataSetChanged();
     }
 }
