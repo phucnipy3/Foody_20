@@ -200,22 +200,25 @@ public class SearchResultActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels) {
             super.onPostExecute(foodPlaceFullViewModels);
             SetFoodPlaceFull(foodPlaceFullViewModels);
-            progressBar.setVisibility(View.GONE);
+            if(foodPlaceArrayList.size()>0)
+                progressBar.setVisibility(View.GONE);
 
         }
     }
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         foodPlaceArrayList.clear();
-        if(mySearchType==SearchType.Nearby){
-            SortByDistance(foodPlaceFullViewModels);
 
-        }
         for (FoodPlaceFullViewModel foodPlaceFullViewModel: foodPlaceFullViewModels
         ) {
             if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
                 foodPlaceArrayList.add(foodPlaceFullViewModel);
             }
         }
+        if(mySearchType==SearchType.Nearby){
+            SortByDistance(foodPlaceArrayList);
+
+        }
+        foodPlaceFullViewAdapter.notifyDataSetChanged();
 
     }
     public int GetProvinceID(){
