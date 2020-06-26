@@ -1,9 +1,15 @@
 package hcmute.edu.vn.foody_20;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,27 +22,50 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.nearby.messages.Distance;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    private TextView tvProvinces,txtBack;
+    private TextView tvProvinces, txtBack;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
     private ListView lstResult;
     private ProgressBar progressBar;
-    private TextView btnBestMatch,btnNearby,btnPopular,btnFilter;
-    int pageIndex =0;
-    private String searchstring="";
-    private enum SearchType {BestMatch,Popular,Nearby};
+    private TextView btnBestMatch, btnNearby, btnPopular, btnFilter;
+    int pageIndex = 0;
+    private String searchstring = "";
+
+    private enum SearchType {BestMatch, Popular, Nearby}
+
+    ;
     private SearchType mySearchType = SearchType.BestMatch;
+    private Location myLocation = new Location("");
+    private Location foodplaceLocation = new Location("");
+    private FusedLocationProviderClient client;
+    private Geocoder geocoder;
+    private List<Address> foodplaceaddresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +79,11 @@ public class SearchResultActivity extends AppCompatActivity {
         btnNearby =(TextView) findViewById(R.id.btnNearby);
         btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+        client = LocationServices.getFusedLocationProviderClient(this);
+        GetMyLocation();
+
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
         tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
@@ -81,7 +115,9 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 searchstring =s.toString();
-                ExecuteQuery();
+                if(mySearchType==SearchType.Popular || mySearchType== SearchType.BestMatch)
+                    ExecuteQuery();
+                SortByDistance();
             }
 
             @Override
@@ -102,6 +138,14 @@ public class SearchResultActivity extends AppCompatActivity {
 
                 mySearchType = SearchType.BestMatch;
                 ExecuteQuery();
+            }
+        });
+        btnNearby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mySearchType = SearchType.Nearby;
+                progressBar.setVisibility(View.VISIBLE);
+                SortByDistance();
             }
         });
         txtBack.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +242,86 @@ public class SearchResultActivity extends AppCompatActivity {
             query = query + "order by CheckinCount DESC offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
             new SearchResultActivity.GetFoodPlaceFull().execute(query);
         }
+        if(mySearchType==SearchType.Nearby){
+
+        }
+    }
+    public void SortByDistance(){
+
+        Collections.sort(tempfoodPlaceArrayList, new Comparator<FoodPlaceFullViewModel>() {
+            @Override
+            public int compare(FoodPlaceFullViewModel o1, FoodPlaceFullViewModel o2) {
+                if(Distance(o1.getAddress())>Distance(o2.getAddress())){
+                    return 1;
+                }
+                else {
+                    if(Distance(o1.getAddress())==Distance(o2.getAddress())){
+                        return 0;
+                    }
+                    else
+                        return -1;
+                }
+
+            }
+
+            @Override
+            public boolean equals(@Nullable Object obj) {
+                return false;
+            }
+        });
+        foodPlaceArrayList.clear();
+
+        for (FoodPlaceFullViewModel foodPlaceFullViewModel: tempfoodPlaceArrayList
+        ) {
+            if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
+                foodPlaceArrayList.add(foodPlaceFullViewModel);
+            }
+        }
+        foodPlaceFullViewAdapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+    }
+    public void GetMyLocation(){
+        if(ActivityCompat.checkSelfPermission(SearchResultActivity.this, ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
+            return;
+        }
+        Task<Location> task =client.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location!=null){
+                    myLocation.setLatitude(location.getLatitude());
+                    myLocation.setLongitude(location.getLongitude());
+
+                }
+            }
+        });
 
     }
+    public Double Distance(String foodplaceAddress){
+        double distance = 0.0;
+        try {
+            foodplaceaddresses = geocoder.getFromLocationName(foodplaceAddress, 1);
+            if ( foodplaceaddresses != null && foodplaceaddresses.size() > 0) {
 
+                Address address = (Address) foodplaceaddresses.get(0);
+                foodplaceLocation.setLatitude(address.getLatitude());
+                foodplaceLocation.setLongitude(address.getLongitude());
+                distance = myLocation.distanceTo(foodplaceLocation)/1000;
+
+            }
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return distance;
+    }
 }
+
+
+
+
