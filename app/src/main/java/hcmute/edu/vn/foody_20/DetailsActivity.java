@@ -59,7 +59,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private List<FoodViewModel> lstFood;
     private FoodViewAdapter myFoodAdapter;
-
+    private String addressFoodPlace;
     Button btnBackDetails;
     ConstraintLayout lineMenu,lineWifi,maps;
     WifiViewModel wifi;
@@ -93,7 +93,8 @@ public class DetailsActivity extends AppCompatActivity {
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri  = "google.navigation:q=" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude();
+               // String uri  = "geo:" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude() +"?z=zoom";
+                String uri = "geo:0,0?q="+addressFoodPlace;
                 Uri gmmIntentUri = Uri.parse(uri);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -222,6 +223,7 @@ public class DetailsActivity extends AppCompatActivity {
     {
 
         try {
+            addressFoodPlace = foodPlaceDetailViewModel.getAddress();
             tvAddress.setText(foodPlaceDetailViewModel.getAddress());
             tvType.setText(foodPlaceDetailViewModel.getType());
             tvPrice.setText(new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMinPrice())+"đ" + " - " + new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMaxPrice()) +"đ");
