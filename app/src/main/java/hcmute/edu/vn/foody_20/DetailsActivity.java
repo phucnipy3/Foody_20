@@ -56,12 +56,14 @@ public class DetailsActivity extends AppCompatActivity {
     private Location foodplaceLocation = new Location("");
     private Geocoder geocoder;
     private List<Address> addresses;
-    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact,tvWifi,tvEnterPassword;
+    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact,txtWifiPass,txtWifiName;
     private List<Address> foodplaceaddresses;
     private String contact = "";
     private ProgressBar progressBar;
 
+    private List<WifiViewModel> lstWifi;
     private List<FoodViewModel> lstFood;
+    private WifiAdapter wifiAdapter;
     private FoodViewAdapter myFoodAdapter;
     private String addressFoodPlace;
     Button btnBackDetails;
@@ -91,8 +93,9 @@ public class DetailsActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
+        txtWifiName = findViewById(R.id.txtWifiName);
+        txtWifiPass = findViewById(R.id.txtWifiPass);
 
-        tvEnterPassword = (TextView) findViewById(R.id.tvEnterPass);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_details);
         maps = findViewById(R.id.maps);
 
@@ -128,7 +131,6 @@ public class DetailsActivity extends AppCompatActivity {
                 DialogAddWifi();
             }
         });
-
         tvContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +161,7 @@ public class DetailsActivity extends AppCompatActivity {
             id = intent.getExtras().getInt("idFoodPlace");
 
         }
-
+        lstWifi = new ArrayList<>();
         lstFood = new ArrayList<>();
         RecyclerView rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFood_id);
         myFoodAdapter = new FoodViewAdapter(this,lstFood);
@@ -209,9 +211,6 @@ public class DetailsActivity extends AppCompatActivity {
             }
             return foodPlaceDetailViewModel;
         }
-
-
-
         @Override
         protected void onPostExecute(FoodPlaceDetailViewModel foodPlaceDetailViewModel) {
             super.onPostExecute(foodPlaceDetailViewModel);
@@ -245,8 +244,6 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
     }
-
-
     private class GetFoodWithImageAsync extends AsyncTask<Void, Void, ArrayList<FoodViewModel>>{
         int id;
 
@@ -415,6 +412,11 @@ public class DetailsActivity extends AppCompatActivity {
     public void SetWifis(ArrayList<WifiViewModel> wifiViewModels)
     {
         // handle wifi
+        for (WifiViewModel wifi: wifiViewModels) {
+            lstWifi.add(wifi);
+        }
+        txtWifiName.setText(lstWifi.get(lstWifi.size()-1).getName());
+        txtWifiPass.setText(lstWifi.get(lstWifi.size()-1).getPassword());
     }
     ///// DialogAddWifi
     private void DialogAddWifi(){
@@ -427,7 +429,12 @@ public class DetailsActivity extends AppCompatActivity {
         final TextView tvWifiPass = (TextView) dialog.findViewById(R.id.tvWifiPass);
         TextView tvCancelDialog = (TextView) dialog.findViewById(R.id.tvCancelDialog);
         Button btnUpdateWifi = (Button) dialog.findViewById(R.id.btnUpdateWifi);
-        ListView wifi_list_view = (ListView) dialog.findViewById(R.id.wifi_list_view);
+        ListView lvWifi = dialog.findViewById(R.id.wifi_list_view);
+
+        wifiAdapter = new WifiAdapter(this,lstWifi);
+        lvWifi.setAdapter(wifiAdapter);
+
+        wifiAdapter.notifyDataSetChanged();
 
         btnUpdateWifi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -445,6 +452,8 @@ public class DetailsActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+
         dialog.show();
+
     }
 }

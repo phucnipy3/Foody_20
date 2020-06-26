@@ -344,6 +344,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        android:id="@+id/txtWifiName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thêm wifi"
@@ -353,7 +354,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvEnterPass"
+                        android:id="@+id/txtWifiPass"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="20dp"
