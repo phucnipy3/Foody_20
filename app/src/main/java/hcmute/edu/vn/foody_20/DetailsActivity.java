@@ -1,7 +1,10 @@
 package hcmute.edu.vn.foody_20;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -63,6 +67,8 @@ public class DetailsActivity extends AppCompatActivity {
     Button btnBackDetails;
     ConstraintLayout lineMenu,lineWifi,maps;
     WifiViewModel wifi;
+    int id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,13 +125,7 @@ public class DetailsActivity extends AppCompatActivity {
         lineWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    // inflate your layout
-                    View myPopupView = getLayoutInflater().inflate(R.layout.dialog_add_wifi, null);
-                    // Create the popup window; decide on the layout parameters
-                    PopupWindow myPopupWindow = new PopupWindow(myPopupView, ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                    // find and initialize your TextView(s), EditText(s) and Button(s); setup their behavior
-                    // display your popup window
-                    myPopupWindow.showAtLocation(myPopupView, Gravity.CENTER, 0, 0);
+                DialogAddWifi();
             }
         });
 
@@ -153,7 +153,6 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
         // query;
-        int id = 0;
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
 
@@ -171,7 +170,7 @@ public class DetailsActivity extends AppCompatActivity {
 
          new GetFoodWithImageAsync(id).execute();
 
-         new AddOrUpdateWifiAsync(wifi).execute();
+         new GetWifisAsync(id).execute();
     }
 
     private class GetFoodPlaceDetailAsync extends AsyncTask<Void, Void, FoodPlaceDetailViewModel> {
@@ -374,5 +373,78 @@ public class DetailsActivity extends AppCompatActivity {
             return true;
         }
 
+    }
+    private class GetWifisAsync extends AsyncTask<Void, Void, ArrayList<WifiViewModel>>{
+        int id;
+
+        public GetWifisAsync(int id) {
+            this.id = id;
+        }
+
+        @Override
+        protected ArrayList<WifiViewModel> doInBackground(Void... voids) {
+
+            ArrayList<WifiViewModel> models = new ArrayList<WifiViewModel>();
+
+            try {
+                // Set the connection string
+                Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+                Connection DBconn = DriverManager.getConnection(getString(R.string.connection));
+                Statement stmt = DBconn.createStatement();
+                ResultSet resultSet = stmt.executeQuery("select * from Wifi where Wifi.FoodPlaceId = '"+ id +"'");
+                while(resultSet.next()){
+                    int id = resultSet.getInt("Id");
+                    String name = resultSet.getString("WifiName");
+                    String password = resultSet.getString("WifiPassword");
+                    models.add(new WifiViewModel(name,password,id));
+                }
+
+                DBconn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return models;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<WifiViewModel> wifiViewModels) {
+            super.onPostExecute(wifiViewModels);
+            SetWifis(wifiViewModels);
+        }
+    }
+    public void SetWifis(ArrayList<WifiViewModel> wifiViewModels)
+    {
+        // handle wifi
+    }
+    ///// DialogAddWifi
+    private void DialogAddWifi(){
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_wifi);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        final TextView tvWifiName = (TextView) dialog.findViewById(R.id.tvWifiName);
+        final TextView tvWifiPass = (TextView) dialog.findViewById(R.id.tvWifiPass);
+        TextView tvCancelDialog = (TextView) dialog.findViewById(R.id.tvCancelDialog);
+        Button btnUpdateWifi = (Button) dialog.findViewById(R.id.btnUpdateWifi);
+        ListView wifi_list_view = (ListView) dialog.findViewById(R.id.wifi_list_view);
+
+        btnUpdateWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WifiViewModel wifi = new WifiViewModel(tvWifiName.getText().toString(), tvWifiPass.getText().toString(), id);
+                new AddOrUpdateWifiAsync(wifi).execute();
+                Toast.makeText(DetailsActivity.this, "Wifi Added", Toast.LENGTH_SHORT).show();
+                dialog.cancel();
+                recreate();
+            }
+        });
+        tvCancelDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 }

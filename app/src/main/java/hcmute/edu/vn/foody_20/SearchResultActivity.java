@@ -210,9 +210,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         for (FoodPlaceFullViewModel foodPlaceFullViewModel: foodPlaceFullViewModels
         ) {
-            if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
                 foodPlaceArrayList.add(foodPlaceFullViewModel);
-            }
         }
         if(mySearchType==SearchType.Nearby){
             SortByDistance(foodPlaceArrayList);
@@ -231,7 +229,7 @@ public class SearchResultActivity extends AppCompatActivity {
         int provinceID = GetProvinceID();
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
         if(searchstring != null && searchstring !=""){
-            query = query + " and LOWER(Province.Name) like '%"+ searchstring.toLowerCase() +"%' ";
+            query = query + " and LOWER(FoodPlace.Name) like '%"+ searchstring.toLowerCase() +"%' ";
         }
         query = query + " and Province.Id = " + String.valueOf(provinceID) + " ";
 
