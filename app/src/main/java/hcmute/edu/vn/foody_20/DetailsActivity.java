@@ -1,10 +1,7 @@
 package hcmute.edu.vn.foody_20;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,7 +10,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -56,14 +52,14 @@ public class DetailsActivity extends AppCompatActivity {
     private Location foodplaceLocation = new Location("");
     private Geocoder geocoder;
     private List<Address> addresses;
-    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
+    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact,tvWifi,tvEnterPassword;
     private List<Address> foodplaceaddresses;
     private String contact = "";
     private ProgressBar progressBar;
 
     private List<FoodViewModel> lstFood;
     private FoodViewAdapter myFoodAdapter;
-
+    private String addressFoodPlace;
     Button btnBackDetails;
     ConstraintLayout lineMenu,lineWifi,maps;
     WifiViewModel wifi;
@@ -89,14 +85,17 @@ public class DetailsActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
+
+        tvEnterPassword = (TextView) findViewById(R.id.tvEnterPass);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_details);
         maps = findViewById(R.id.maps);
 
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(DetailsActivity.this, "Openning GG maps...", Toast.LENGTH_SHORT).show();
-                String uri  = "google.navigation:q=" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude();
+                // String uri  = "geo:" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude() +"?z=zoom";
+//                String uri  = "google.navigation:q=" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude();
+                String uri = "geo:0,0?q="+addressFoodPlace;
                 Uri gmmIntentUri = Uri.parse(uri);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -111,10 +110,8 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 int fpID = intent.getExtras().getInt("idFoodPlace");
-                String fpName = intent.getExtras().getString("nameFoodPlace");
                 Intent intent1 = new Intent(DetailsActivity.this,MenuActivity.class);
                 intent1.putExtra("idFoodPlace",fpID);
-                intent1.putExtra("nameFoodPlace",fpName);
                 startActivity(intent1);
             }
         });
@@ -122,7 +119,13 @@ public class DetailsActivity extends AppCompatActivity {
         lineWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogAddWifi();
+                    // inflate your layout
+                    View myPopupView = getLayoutInflater().inflate(R.layout.dialog_add_wifi, null);
+                    // Create the popup window; decide on the layout parameters
+                    PopupWindow myPopupWindow = new PopupWindow(myPopupView, ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                    // find and initialize your TextView(s), EditText(s) and Button(s); setup their behavior
+                    // display your popup window
+                    myPopupWindow.showAtLocation(myPopupView, Gravity.CENTER, 0, 0);
             }
         });
 
@@ -170,33 +173,7 @@ public class DetailsActivity extends AppCompatActivity {
 
          new AddOrUpdateWifiAsync(wifi).execute();
     }
-    ///// DialogAddWifi
-    private void DialogAddWifi(){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_add_wifi);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        TextView tvWifiName = (TextView) dialog.findViewById(R.id.tvWifiName);
-        TextView tvWifiPass = (TextView) dialog.findViewById(R.id.tvWifiPass);
-        TextView tvCancelDialog = (TextView) dialog.findViewById(R.id.tvCancelDialog);
-        Button btnUpdateWifi = (Button) dialog.findViewById(R.id.btnUpdateWifi);
-        ListView wifi_list_view = (ListView) dialog.findViewById(R.id.wifi_list_view);
-
-        btnUpdateWifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DetailsActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-        tvCancelDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        dialog.show();
-    }
     private class GetFoodPlaceDetailAsync extends AsyncTask<Void, Void, FoodPlaceDetailViewModel> {
 
         int id;
@@ -247,6 +224,7 @@ public class DetailsActivity extends AppCompatActivity {
     {
 
         try {
+            addressFoodPlace = foodPlaceDetailViewModel.getAddress();
             tvAddress.setText(foodPlaceDetailViewModel.getAddress());
             tvType.setText(foodPlaceDetailViewModel.getType());
             tvPrice.setText(new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMinPrice())+"đ" + " - " + new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMaxPrice()) +"đ");
