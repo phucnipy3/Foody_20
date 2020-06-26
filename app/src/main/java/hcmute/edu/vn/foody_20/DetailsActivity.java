@@ -52,7 +52,7 @@ public class DetailsActivity extends AppCompatActivity {
     private Location foodplaceLocation = new Location("");
     private Geocoder geocoder;
     private List<Address> addresses;
-    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact;
+    private TextView tvAddress, tvDistance, tvType, tvPrice, tvFoodPlaceName, tvTime, tvProvinceName, tvStatus, tvContact,tvWifi,tvEnterPassword;
     private List<Address> foodplaceaddresses;
     private String contact = "";
     private ProgressBar progressBar;
@@ -62,6 +62,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     Button btnBackDetails;
     ConstraintLayout lineMenu,lineWifi,maps;
+    WifiViewModel wifi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,13 +85,21 @@ public class DetailsActivity extends AppCompatActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvContact = (TextView) findViewById(R.id.tvContact);
+        tvWifi =(TextView) findViewById(R.id.tvWifi);
+        tvEnterPassword = (TextView) findViewById(R.id.tvEnterPass);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_details);
         maps = findViewById(R.id.maps);
 
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(DetailsActivity.this, "Opening Google maps...", Toast.LENGTH_SHORT).show();
+                String uri  = "google.navigation:q=" + foodplaceLocation.getLatitude() +"," +foodplaceLocation.getLongitude();
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
             }
         });
 
@@ -159,8 +168,8 @@ public class DetailsActivity extends AppCompatActivity {
         new GetFoodPlaceDetailAsync(id).execute();
 
          new GetFoodWithImageAsync(id).execute();
-         // wifi là wifi view model, lấy đc wifi bỏ vô là chạy đc
-         //new AddOrUpdateWifiAsync(wifi).execute();
+
+         new AddOrUpdateWifiAsync(wifi).execute();
     }
 
     private class GetFoodPlaceDetailAsync extends AsyncTask<Void, Void, FoodPlaceDetailViewModel> {

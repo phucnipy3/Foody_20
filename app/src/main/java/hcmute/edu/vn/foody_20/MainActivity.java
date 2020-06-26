@@ -59,17 +59,9 @@ public class MainActivity extends AppCompatActivity {
         });
         lstFoodPlace = new ArrayList<>();
         rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
-        if(lstFoodPlace.size()>0  && lstFoodPlace.get(lstFoodPlace.size()-1)==null)
-        {
-            myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
-            rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
-            rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
-        }
-        else {
-            myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
-            rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
-            rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
-        }
+        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
+        rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
         initScrollListener();
 
         new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
@@ -88,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if(pageIndex!=0) {
+                lstFoodPlace.add(null);
+                myFoodPlaceAdapter.notifyItemInserted(lstFoodPlace.size() - 1);
                 lstFoodPlace.add(null);
                 myFoodPlaceAdapter.notifyItemInserted(lstFoodPlace.size() - 1);
             }
@@ -124,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(foodPlaceCardViewModels);
             progressBar.setVisibility(View.GONE);
             if(pageIndex!=0){
+                lstFoodPlace.remove(lstFoodPlace.size() - 1);
+                myFoodPlaceAdapter.notifyItemRemoved(lstFoodPlace.size());
                 lstFoodPlace.remove(lstFoodPlace.size() - 1);
                 myFoodPlaceAdapter.notifyItemRemoved(lstFoodPlace.size());
             }

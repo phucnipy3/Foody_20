@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,6 +33,10 @@ public class SearchResultActivity extends AppCompatActivity {
     private ListView lstResult;
     private ProgressBar progressBar;
     private TextView btnBestMatch,btnNearby,btnPopular,btnFilter;
+    int pageIndex =0;
+    private String searchstring="";
+    private enum SearchType {BestMatch,Popular,Nearby};
+    private SearchType mySearchType = SearchType.BestMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,8 @@ public class SearchResultActivity extends AppCompatActivity {
         btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        tvProvinces.setText(sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name)));
+        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
+        tvProvinces.setText(sharedPreferences.getString("currentprovincename","Hồ Chí Minh"));
 
         lstResult = (ListView) findViewById(R.id.lstResult);
 
@@ -63,12 +68,8 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
-        int pageIndex =0;
-        int provinceID = GetProvinceID();
-        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
-        query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
-        query = query + "order by Id offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
-        new GetFoodPlaceFullAsync().execute(query);
+
+        ExecuteQuery();
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -77,20 +78,9 @@ public class SearchResultActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int countFoodPlaceFound =0;
-                foodPlaceArrayList.clear();
-                for (int i = 0; i < tempfoodPlaceArrayList.size(); i++) {
-                    if (tempfoodPlaceArrayList.get(i).getName().toLowerCase().contains(s.toString().toLowerCase())) {
-                        foodPlaceArrayList.add(tempfoodPlaceArrayList.get(i));
-                        foodPlaceFullViewAdapter.notifyDataSetChanged();
-                        countFoodPlaceFound ++;
-                    }
-                }
-                if(countFoodPlaceFound<1){
-                    foodPlaceArrayList.clear();
-                    foodPlaceFullViewAdapter.notifyDataSetChanged();
-                }
 
+                searchstring =s.toString();
+                ExecuteQuery();
             }
 
             @Override
@@ -98,11 +88,30 @@ public class SearchResultActivity extends AppCompatActivity {
 
             }
         });
+        btnPopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mySearchType = SearchType.Popular;
+                ExecuteQuery();
+            }
+        });
+        btnBestMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-
-
+                mySearchType = SearchType.BestMatch;
+                ExecuteQuery();
+            }
+        });
     }
-    private class GetFoodPlaceFullAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
+    private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected ArrayList<FoodPlaceFullViewModel> doInBackground(String... strings) {
@@ -149,17 +158,40 @@ public class SearchResultActivity extends AppCompatActivity {
         }
     }
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
+        foodPlaceArrayList.clear();
+        tempfoodPlaceArrayList.clear();
         for (FoodPlaceFullViewModel foodPlaceFullViewModel: foodPlaceFullViewModels
         ) {
-            foodPlaceArrayList.add(foodPlaceFullViewModel);
-            tempfoodPlaceArrayList.add(foodPlaceFullViewModel);
+            if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
+                foodPlaceArrayList.add(foodPlaceFullViewModel);
+                tempfoodPlaceArrayList.add(foodPlaceFullViewModel);
+            }
         }
         foodPlaceFullViewAdapter.notifyDataSetChanged();
     }
     public int GetProvinceID(){
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        return sharedPreferences.getInt(getString(R.string.key_province_id), getResources().getInteger(R.integer.default_province_id));
+        sharedPreferences = getSharedPreferences("currentprovince",MODE_PRIVATE);
+        return sharedPreferences.getInt("currentprovinceid",1);
+    }
+
+    public void ExecuteQuery(){
+        int provinceID = GetProvinceID();
+        if(mySearchType == SearchType.BestMatch){
+            String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
+
+            query = query + " and Province.Id = " + String.valueOf(provinceID) + " ";
+            query = query + "order by Id  offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
+            new SearchResultActivity.GetFoodPlaceFull().execute(query);
+        }
+        if(mySearchType==SearchType.Popular){
+            String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
+
+            query = query + "and Province.Id = " + String.valueOf(provinceID) + " ";
+            query = query + "order by CheckinCount DESC offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
+            new SearchResultActivity.GetFoodPlaceFull().execute(query);
+        }
+
     }
 
 }
