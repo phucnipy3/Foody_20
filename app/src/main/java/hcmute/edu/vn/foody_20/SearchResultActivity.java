@@ -49,7 +49,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private TextView tvProvinces, txtBack;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
-    private ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
     private ListView lstResult;
     private ProgressBar progressBar;
@@ -91,7 +90,7 @@ public class SearchResultActivity extends AppCompatActivity {
         lstResult = (ListView) findViewById(R.id.lstResult);
 
         foodPlaceArrayList = new ArrayList<>();
-        tempfoodPlaceArrayList = new ArrayList<>();
+
         foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,R.layout.result_item,foodPlaceArrayList);
         lstResult.setAdapter(foodPlaceFullViewAdapter);
         lstResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -113,11 +112,8 @@ public class SearchResultActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 searchstring =s.toString();
-                if(mySearchType==SearchType.Popular || mySearchType== SearchType.BestMatch)
-                    ExecuteQuery();
-                SortByDistance();
+                ExecuteQuery();
             }
 
             @Override
@@ -144,8 +140,8 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mySearchType = SearchType.Nearby;
-                progressBar.setVisibility(View.VISIBLE);
-                SortByDistance();
+                ExecuteQuery();
+
             }
         });
         txtBack.setOnClickListener(new View.OnClickListener() {
@@ -203,22 +199,24 @@ public class SearchResultActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels) {
             super.onPostExecute(foodPlaceFullViewModels);
-
             SetFoodPlaceFull(foodPlaceFullViewModels);
             progressBar.setVisibility(View.GONE);
+
         }
     }
     public void SetFoodPlaceFull(ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels){
         foodPlaceArrayList.clear();
-        tempfoodPlaceArrayList.clear();
+        if(mySearchType==SearchType.Nearby){
+            SortByDistance(foodPlaceFullViewModels);
+
+        }
         for (FoodPlaceFullViewModel foodPlaceFullViewModel: foodPlaceFullViewModels
         ) {
             if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
                 foodPlaceArrayList.add(foodPlaceFullViewModel);
-                tempfoodPlaceArrayList.add(foodPlaceFullViewModel);
             }
         }
-        foodPlaceFullViewAdapter.notifyDataSetChanged();
+
     }
     public int GetProvinceID(){
         SharedPreferences sharedPreferences;
@@ -228,7 +226,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
     public void ExecuteQuery(){
         int provinceID = GetProvinceID();
-        if(mySearchType == SearchType.BestMatch){
+        if(mySearchType == SearchType.BestMatch || mySearchType == SearchType.Nearby){
             String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
 
             query = query + " and Province.Id = " + String.valueOf(provinceID) + " ";
@@ -242,12 +240,9 @@ public class SearchResultActivity extends AppCompatActivity {
             query = query + "order by CheckinCount DESC offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
             new SearchResultActivity.GetFoodPlaceFull().execute(query);
         }
-        if(mySearchType==SearchType.Nearby){
 
-        }
     }
-    public void SortByDistance(){
-
+    public void SortByDistance(ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList){
         Collections.sort(tempfoodPlaceArrayList, new Comparator<FoodPlaceFullViewModel>() {
             @Override
             public int compare(FoodPlaceFullViewModel o1, FoodPlaceFullViewModel o2) {
@@ -269,16 +264,6 @@ public class SearchResultActivity extends AppCompatActivity {
                 return false;
             }
         });
-        foodPlaceArrayList.clear();
-
-        for (FoodPlaceFullViewModel foodPlaceFullViewModel: tempfoodPlaceArrayList
-        ) {
-            if(foodPlaceFullViewModel.getName().toLowerCase().contains(searchstring.toLowerCase())){
-                foodPlaceArrayList.add(foodPlaceFullViewModel);
-            }
-        }
-        foodPlaceFullViewAdapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
     }
     public void GetMyLocation(){
         if(ActivityCompat.checkSelfPermission(SearchResultActivity.this, ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
