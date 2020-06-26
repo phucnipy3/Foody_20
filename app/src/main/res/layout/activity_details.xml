@@ -32,7 +32,7 @@
 
                     <Button
                         android:id="@+id/btnBackDetails"
-                        android:layout_width="20dp"
+                        android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:background="@drawable/icn_back"
                         android:layout_margin="10dp"/>
@@ -48,7 +48,7 @@
                             android:layout_height="wrap_content"
                             android:background="#f00"
                             android:gravity="center"
-                            android:text="Bún đậu cô nương"
+                            android:text=""
                             android:textColor="#fff"
                             android:textSize="20dp"
                             android:textStyle="bold" />
@@ -60,7 +60,7 @@
                             android:background="#f00"
                             android:baselineAligned="false"
                             android:gravity="center"
-                            android:text="Đồng nai"
+                            android:text=""
                             android:textColor="#fff" />
 
                     </LinearLayout>
@@ -109,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:bottom="@+id/tvStatus"
-                            android:text="10:00 - 21:00"
+                            android:text=""
                             android:textColor="#333"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
@@ -129,14 +129,7 @@
                         android:text="  Liên hệ"
                         android:textColor="#555"
                         android:textStyle="bold"/>
-                    <ProgressBar
-                        android:id="@+id/progress_bar_details"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:indeterminateDrawable="@drawable/pgb_1"
-                        android:indeterminateDuration="@android:integer/config_longAnimTime"
-                        />
+
                 </RelativeLayout>
                 <ImageView
                     app:layout_constraintTop_toBottomOf="@+id/status"
@@ -201,7 +194,7 @@
                                 android:id="@+id/tvAddress"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Chợ thử Đức, Linh Trung, Thủ Đức, Thành phố Hồ Chí Minh."
+                                android:text=""
                                 app:layout_constraintTop_toTopOf="parent"
                                 android:textColor="#000"
                                 />
@@ -215,7 +208,7 @@
                                     android:id="@+id/tvDistance"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="4.2Km"
+                                    android:text=""
                                     android:textColor="#2a6"
                                     android:textStyle="bold"
                                     />
@@ -246,7 +239,7 @@
                         android:id="@+id/tvType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quán án - Món Việt"
+                        android:text=""
                         android:layout_marginLeft="13dp"
                         android:textColor="#000"
                         />
@@ -268,7 +261,7 @@
                             android:id="@+id/tvPrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="70,000đ - 250,000đ"
+                            android:text=""
                             android:layout_marginLeft="13dp"
                             android:textColor="#000"
                             />
@@ -324,7 +317,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvMenu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thực đơn"
@@ -352,7 +344,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvWifi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thêm wifi"
@@ -373,6 +364,15 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <ProgressBar
+                    app:layout_constraintTop_toBottomOf="@id/lineWifi"
+                    android:id="@+id/progress_bar_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateDrawable="@drawable/pgb_1"
+                    android:indeterminateDuration="@android:integer/config_longAnimTime"
+                    />
                 <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewFood_id"
             android:layout_width="match_parent"

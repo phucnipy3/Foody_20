@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="Xong"
                 android:background="#f00"
-                android:textColor="#eee"
+                android:textColor="#fff"
                 android:padding="10dp"
                 android:textSize="20dp"
                 android:layout_alignParentRight="true"

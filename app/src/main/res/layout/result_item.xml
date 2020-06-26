@@ -29,7 +29,6 @@
                 android:textStyle="bold"
                 android:textSize="20dp"
                 android:textColor="#000"
-                android:text="Bún đậu mắm tôm Thủ Đức"
                 />
             <TextView
                 android:id="@+id/txtRate"
@@ -39,7 +38,7 @@
                 android:textStyle="bold"
                 android:textColor="#3d5"
                 android:textSize="20dp"
-                android:text="6.3"
+                android:text=""
                 />
         </RelativeLayout>
         <LinearLayout
@@ -58,14 +57,12 @@
                     android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/txtS"
-                    android:text="Chợ linh trung, Thủ Đức,TP HCM"
                     />
                 <TextView
                     android:id="@+id/txtS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="4.2km"
                     />
             </RelativeLayout>
             <LinearLayout
@@ -84,7 +81,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_toLeftOf="@+id/txtCmt"
                         android:textColor="#000"
-                        android:text="Quán ăn"
                         />
 
                     <TextView
@@ -110,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/icon_now"
-                    android:text="   Nhập 'KHANGLD' nhận giảm 20k"
+                    android:text="   Nhập 'FOODY20' nhận giảm 20k"
                     android:textColor="#000" />
             </LinearLayout>
     </LinearLayout>

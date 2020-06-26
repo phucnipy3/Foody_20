@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    private TextView tvProvinces;
+    private TextView tvProvinces,txtBack;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList;
@@ -42,6 +42,7 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        txtBack = findViewById(R.id.txtBack);
         tvProvinces =(TextView) findViewById(R.id.tvProvinces);
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
@@ -101,6 +102,12 @@ public class SearchResultActivity extends AppCompatActivity {
 
                 mySearchType = SearchType.BestMatch;
                 ExecuteQuery();
+            }
+        });
+        txtBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

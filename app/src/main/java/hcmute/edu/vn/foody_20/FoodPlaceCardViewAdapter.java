@@ -110,6 +110,7 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
             public void onClick(View v) {
                 Intent intent = new Intent(mContext,DetailsActivity.class);
                 intent.putExtra("idFoodPlace",mData.get(position).getId());
+                intent.putExtra("nameFoodPlace",mData.get(position).getName());
                 mContext.startActivity(intent);
             }
         });

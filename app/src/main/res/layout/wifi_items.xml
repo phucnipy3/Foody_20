@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp">
+    <ImageView
+        android:id="@+id/imgWifiItems"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/icn_wifi_edt"
+        android:padding="5dp"
+        />
+    <TextView
+        android:id="@+id/tvWifiNameItems"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Foody 20"
+        android:textColor="#399"
+        android:textStyle="bold"
+        android:padding="5dp"
+        app:layout_constraintLeft_toRightOf="@+id/imgWifiItems"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Pass:"
+        app:layout_constraintRight_toLeftOf="@+id/tvPassItems"
+        android:paddingVertical="5dp"
+        />
+    <TextView
+        android:id="@+id/tvPassItems"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:padding="5dp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

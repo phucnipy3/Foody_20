@@ -27,6 +27,7 @@
                 android:drawableLeft="@drawable/icn_search"
                 android:drawableRight="@drawable/btn_bgr"
                 android:hint="Tìm địa điểm, món ăn, địa chỉ..."
+                android:editable="false"
                 android:padding="5dp" />
 
             <TextView
@@ -35,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/edtSearch"
                 android:padding="7dp"
-                android:text="Hồ Chí Minh"
+                android:text=""
                 android:textColor="#333"
                 android:textStyle="bold" />
         </RelativeLayout>

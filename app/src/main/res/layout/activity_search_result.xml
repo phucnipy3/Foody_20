@@ -19,43 +19,56 @@
         >
         <TextView
             android:id="@+id/txtBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@drawable/icn_back"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
             android:textStyle="bold"
             android:textColor="#fff"
             />
-        <EditText
-            android:id="@+id/edtSearchResult"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_bgr"
+            android:layout_toRightOf="@+id/txtBack"
+            >
+        <EditText
+            android:id="@+id/edtSearchResult"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:inputType="text"
+            android:scrollHorizontally="true"
+            android:background="@drawable/edittext_bgr"
             android:drawableLeft="@drawable/icn_search"
             android:padding="5dp"
-            android:hint=""
+            android:hint="Tìm kiếm"
             android:drawableRight="@drawable/btn_bgr"
-            android:layout_toRightOf="@+id/txtBack"
             />
         <TextView
+            android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Địa điểm ở: "
             android:paddingVertical="7dp"
-            android:layout_toLeftOf="@+id/tvProvinces"
+            android:layout_toRightOf="@+id/edtSearchResult"
             android:textStyle="bold"
+            android:layout_weight="0"
             />
         <TextView
             android:id="@+id/tvProvinces"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hồ Chí Minh"
+            android:text=""
             android:padding="7dp"
             android:textColor="#333"
-            android:layout_alignRight="@+id/edtSearchResult"
+            android:layout_toRightOf="@+id/tv1"
             android:textStyle="bold"
+            android:layout_weight="0"
             />
+        </LinearLayout>
     </RelativeLayout>
         <TableRow
             android:layout_width="match_parent"

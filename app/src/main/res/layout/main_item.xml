@@ -44,7 +44,7 @@
         android:id="@+id/tvFPName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Canh bún cô ba"
+        android:text=""
         android:textStyle="bold"
         android:textColor="#000"
         android:textSize="16dp"
@@ -53,7 +53,7 @@
         android:id="@+id/tvReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mã khuyến mãi. Miễn phí vận chuyển."
+        android:text=""
         />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -63,10 +63,13 @@ public class MenuActivity extends AppCompatActivity {
         rcvImageMenu.setAdapter(ImgFoodAdapter);
 
         int id = 0;
+        String name="";
         if(getIntent().getExtras()!=null) {
             Intent intent = getIntent();
             id = intent.getExtras().getInt("idFoodPlace");
+            name = intent.getExtras().getString("nameFoodPlace");
         }
+        tvNameMenu.setText(name);
         new GetFoodAsync(id).execute();
 
         btnBackMenu.setOnClickListener(new View.OnClickListener() {
