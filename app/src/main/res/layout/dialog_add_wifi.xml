@@ -34,12 +34,27 @@
             android:text="Thêm hoặc cập nhật wifi"
             android:textColor="#275"
             android:textSize="30dp" />
-        <ListView
-            android:id="@+id/wifi_list_view"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            />
+            android:layout_weight="0.1"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/wifi_list_view"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:dividerHeight="2px"
+                android:padding="10dp"></ListView>
+        </LinearLayout>
+
+<!--        <ListView-->
+<!--            android:id="@+id/wifi_list_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:padding="10dp"-->
+<!--            />-->
         <EditText
             android:id="@+id/tvWifiName"
             android:layout_width="match_parent"
@@ -47,7 +62,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/bgr_edt"
             android:drawableLeft="@drawable/icn_wifi_edt"
-            android:hint="  Thêm  hoặc cập nhật wifi"
+            android:hint=" Tên wifi ..."
             android:padding="15dp" />
 
         <EditText
@@ -57,7 +72,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/bgr_edt"
             android:drawableLeft="@drawable/icn_pwd_edt"
-            android:hint="  Nhập mật khẩu wifi"
+            android:hint="   Mật khẩu wifi"
             android:padding="15dp" />
 
         <Button

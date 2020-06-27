@@ -75,60 +75,90 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-
+            <LinearLayout
+                android:id="@+id/lnlBestMatch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
+                android:layout_weight="0.3"
+                android:background="#eeddff"
+                android:paddingBottom="2dp"
+                >
             <TextView
                 android:id="@+id/btnBestMatch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="1dp"
-                android:layout_weight="0.3"
-                android:background="#edf"
-                android:gravity="center"
-                android:paddingVertical="10dp"
                 android:text="Đúng nhất"
-                android:textColor="#000"
-                android:textSize="17dp" />
-            <TextView
-                android:textColor="#000"
-                android:textSize="17dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#eeddff"
                 android:gravity="center"
-                android:background="#edf"
                 android:paddingVertical="10dp"
+                android:textColor="#000"
+                android:textStyle="bold"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/lnlNearby"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginRight="1dp"
+                android:layout_weight="0.3"
+                android:background="#eeddff"
+                android:paddingBottom="2dp"
+                >
+            <TextView
                 android:id="@+id/btnNearby"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
                 android:text="Gần nhất"
-                />
-            <TextView
-                android:textColor="#000"
-                android:textSize="17dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#eeddff"
                 android:gravity="center"
-                android:background="#edf"
                 android:paddingVertical="10dp"
+                android:textColor="#000"
+                android:textStyle="bold"
+                />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/lnlPopular"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginRight="1dp"
-                android:id="@+id/btnPopular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Phổ biến"
-                />
+                android:background="#eeddff"
+                android:paddingBottom="2dp"
+                >
             <TextView
-                android:textColor="#000"
-                android:textSize="17dp"
+                android:id="@+id/btnPopular"
+                android:text="Phổ biến"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#eeddff"
                 android:gravity="center"
-                android:background="#edf"
                 android:paddingVertical="10dp"
-                android:id="@+id/btnFilter"
+                android:textColor="#000"
+                android:textStyle="bold"
+                />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/lnlFilter"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
                 android:layout_weight="0.1"
+                android:background="#eeddff"
+                android:paddingBottom="2dp"
+                >
+            <TextView
+                android:id="@+id/btnFilter"
                 android:text="Lọc"
                 android:drawableRight="@drawable/icn_filter"
-                android:paddingRight="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#eeddff"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:textColor="#000"
+                android:textStyle="bold"
                 />
-
+            </LinearLayout>
         </TableRow>
         <ProgressBar
             android:id="@+id/progress_bar_search"

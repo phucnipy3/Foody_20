@@ -26,7 +26,7 @@
                 android:background="@drawable/edittext_bgr"
                 android:drawableLeft="@drawable/icn_search"
                 android:drawableRight="@drawable/btn_bgr"
-                android:hint="Tìm địa điểm, món ăn, địa chỉ..."
+                android:hint="Tìm địa điểm, món ăn..."
                 android:editable="false"
                 android:padding="5dp" />
 

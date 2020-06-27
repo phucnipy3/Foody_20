@@ -7,6 +7,9 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -61,7 +65,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private String searchstring = "";
     private Timer timer;
     private enum SearchType {BestMatch, Popular, Nearby}
-
+    private LinearLayout lnlPopular,lnlBestmatch,lnlFilter,lnlNearBy;
     ;
     private SearchType mySearchType = SearchType.BestMatch;
     private Location myLocation = new Location("");
@@ -89,6 +93,10 @@ public class SearchResultActivity extends AppCompatActivity {
         btnNearby =(TextView) findViewById(R.id.btnNearby);
         btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
+        lnlPopular = findViewById(R.id.lnlPopular);
+        lnlBestmatch = findViewById(R.id.lnlBestMatch);
+        lnlFilter  = findViewById(R.id.lnlFilter);
+        lnlNearBy = findViewById(R.id.lnlNearby);
 
         tvChooseProvince.setText(GetSelectedProvinceName());
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -186,6 +194,9 @@ public class SearchResultActivity extends AppCompatActivity {
         btnPopular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetBgr();
+                lnlPopular.setBackgroundColor(Color.parseColor("#00dddd"));
+
                 mySearchType = SearchType.Popular;
                 ExecuteQuery();
             }
@@ -193,6 +204,8 @@ public class SearchResultActivity extends AppCompatActivity {
         btnBestMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetBgr();
+                lnlBestmatch.setBackgroundColor(Color.parseColor("#00dddd"));
 
                 mySearchType = SearchType.BestMatch;
                 ExecuteQuery();
@@ -201,6 +214,9 @@ public class SearchResultActivity extends AppCompatActivity {
         btnNearby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetBgr();
+                lnlNearBy.setBackgroundColor(Color.parseColor("#00dddd"));
+
                 mySearchType = SearchType.Nearby;
                 ExecuteQuery();
 
@@ -374,5 +390,10 @@ public class SearchResultActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return distance;
+    }
+    private void resetBgr(){
+        lnlBestmatch.setBackgroundColor(Color.parseColor("#eeddff"));
+        lnlNearBy.setBackgroundColor(Color.parseColor("#eeddff"));
+        lnlPopular.setBackgroundColor(Color.parseColor("#eeddff"));
     }
 }

@@ -414,11 +414,17 @@ public class DetailsActivity extends AppCompatActivity {
     public void SetWifis(ArrayList<WifiViewModel> wifiViewModels)
     {
         // handle wifi
-        for (WifiViewModel wifi: wifiViewModels) {
-            lstWifi.add(wifi);
+        try {
+            for (WifiViewModel wifi : wifiViewModels) {
+                lstWifi.add(wifi);
+            }
+            if (lstWifi.size()>0) {
+                txtWifiName.setText(lstWifi.get(lstWifi.size() - 1).getName());
+                txtWifiPass.setText(lstWifi.get(lstWifi.size() - 1).getPassword());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        txtWifiName.setText(lstWifi.get(lstWifi.size()-1).getName());
-        txtWifiPass.setText(lstWifi.get(lstWifi.size()-1).getPassword());
     }
     ///// DialogAddWifi
     private void DialogAddWifi(){

@@ -69,9 +69,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvImageMenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameMenu"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvNameMenu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ExpandableListView
         android:id="@+id/eplMenu"
