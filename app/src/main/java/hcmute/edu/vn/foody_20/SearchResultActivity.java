@@ -14,7 +14,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,12 +43,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    private TextView tvProvinces, txtBack;
+    private TextView tvChooseProvince, txtBack;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
@@ -55,7 +59,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private TextView btnBestMatch, btnNearby, btnPopular, btnFilter;
     int pageIndex = 0;
     private String searchstring = "";
-
+    private Timer timer;
     private enum SearchType {BestMatch, Popular, Nearby}
 
     ;
@@ -67,11 +71,18 @@ public class SearchResultActivity extends AppCompatActivity {
     private List<Address> foodplaceaddresses;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        tvChooseProvince.setText(GetSelectedProvinceName());
+        ExecuteQuery();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
         txtBack = findViewById(R.id.txtBack);
-        tvProvinces =(TextView) findViewById(R.id.tvProvinces);
+        tvChooseProvince =(TextView) findViewById(R.id.tvChooseProvince);
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
         btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
@@ -79,13 +90,14 @@ public class SearchResultActivity extends AppCompatActivity {
         btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
 
+        tvChooseProvince.setText(GetSelectedProvinceName());
         geocoder = new Geocoder(this, Locale.getDefault());
         client = LocationServices.getFusedLocationProviderClient(this);
         GetMyLocation();
 
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        tvProvinces.setText(sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name)));
+        tvChooseProvince.setText(sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name)));
 
         lstResult = (ListView) findViewById(R.id.lstResult);
 
@@ -93,6 +105,15 @@ public class SearchResultActivity extends AppCompatActivity {
 
         foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,R.layout.result_item,foodPlaceArrayList);
         lstResult.setAdapter(foodPlaceFullViewAdapter);
+
+        tvChooseProvince.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchResultActivity.this,ChooseProvincesActivity.class);
+                intent.putExtra("backToMain",false);
+                startActivity(intent);
+            }
+        });
         lstResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,6 +125,20 @@ public class SearchResultActivity extends AppCompatActivity {
 
 
         ExecuteQuery();
+
+        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchstring = edtSearch.getText().toString();
+                    ExecuteQuery();
+                    return true;
+                }
+                return false;
+            }
+
+        });
+
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -112,13 +147,40 @@ public class SearchResultActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchstring =s.toString();
-                ExecuteQuery();
+                if (timer != null) {
+                    timer.cancel();
+                }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void afterTextChanged(final Editable arg0) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        SearchResultActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                searchstring =arg0.toString();
+                                ExecuteQuery();
+                            }
+                        });
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        SearchResultActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ;
+                            }
+                        });
+                        // hide keyboard as well?
+                        // InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        // in.hideSoftInputFromWindow(searchText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                }, 600); // 600ms delay before the timer executes the "run" method from TimerTask
             }
         });
         btnPopular.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +212,11 @@ public class SearchResultActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    public String GetSelectedProvinceName(){
+        SharedPreferences sharedPreferences;
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
+        return sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
     }
     private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
 
@@ -229,7 +296,7 @@ public class SearchResultActivity extends AppCompatActivity {
         int provinceID = GetProvinceID();
         String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
         if(searchstring != null && searchstring !=""){
-            query = query + " and LOWER(FoodPlace.Name) like '%"+ searchstring.toLowerCase() +"%' ";
+            query = query + " and LOWER(FoodPlace.Name) like N'%"+ searchstring.toLowerCase() +"%' ";
         }
         query = query + " and Province.Id = " + String.valueOf(provinceID) + " ";
 
@@ -309,7 +376,3 @@ public class SearchResultActivity extends AppCompatActivity {
         return distance;
     }
 }
-
-
-
-

@@ -119,8 +119,10 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 int fpID = intent.getExtras().getInt("idFoodPlace");
+                String fpName = intent.getExtras().getString("nameFoodPlace");
                 Intent intent1 = new Intent(DetailsActivity.this,MenuActivity.class);
                 intent1.putExtra("idFoodPlace",fpID);
+                intent1.putExtra("nameFoodPlace",fpName);
                 startActivity(intent1);
             }
         });
@@ -362,7 +364,7 @@ public class DetailsActivity extends AppCompatActivity {
                 if(count == 0)
                     stmt.execute("insert into Wifi(WifiName, WifiPassword, FoodPlaceId) values('"+wifi.getName()+"', '"+wifi.getPassword()+"', "+wifi.getFoodPlaceId()+")");
                 else
-                    stmt.execute("update Wifi set Wifi.WifiPassword = "+ wifi.getPassword() +" where Wifi.WifiName = '"+wifi.getName()+"' and Wifi.FoodPlaceId = '"+ wifi.getFoodPlaceId()+"'");
+                    stmt.execute("update Wifi set Wifi.WifiPassword = '"+ wifi.getPassword() +"' where Wifi.WifiName = '"+wifi.getName()+"' and Wifi.FoodPlaceId = '"+ wifi.getFoodPlaceId()+"'");
                 DBconn.close();
             } catch (Exception e) {
                 e.printStackTrace();

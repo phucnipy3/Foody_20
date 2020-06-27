@@ -48,6 +48,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         provinceArrayList = new ArrayList<>();
         provinceTempArrayList = new ArrayList<>();
         provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList, GetSelectedProvince());
+        intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         lstProvinces.setAdapter(provinceAdapter);
 
         new GetProvincesAsync().execute();
@@ -62,10 +63,14 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intentProvince);
-                SaveProvince();
-                finish();
+                Intent i = getIntent();
+                if (i.getExtras().getBoolean("backToMain")){
+                    startActivity(intentProvince);
+                    SaveProvince();
+                }
+                else
+                    SaveProvince();
+                    finish();
             }
         });
 

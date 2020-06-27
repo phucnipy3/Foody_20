@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,24 +38,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtProvinces = findViewById(R.id.txtProvinces);
 
+        txtProvinces = findViewById(R.id.txtProvinces);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
-        txtProvinces.setText(GetSelectedProvinceName());
         edtSearch = (EditText) findViewById(R.id.edtSearch);
+
+        txtProvinces.setText(GetSelectedProvinceName());
+
         edtSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,SearchResultActivity.class));
             }
         });
-
         txtProvinces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,ChooseProvincesActivity.class);
+                intent.putExtra("backToMain",true);
                 startActivity(intent);
-
             }
         });
         lstFoodPlace = new ArrayList<>();
