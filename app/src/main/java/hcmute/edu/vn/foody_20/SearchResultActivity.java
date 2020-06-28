@@ -318,12 +318,11 @@ public class SearchResultActivity extends AppCompatActivity {
 
         if(mySearchType == SearchType.BestMatch || mySearchType == SearchType.Nearby){
 
-            query = query + "order by Id  offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
             new SearchResultActivity.GetFoodPlaceFull().execute(query);
         }
         if(mySearchType==SearchType.Popular){
 
-            query = query + "order by CheckinCount DESC offset "+ String.valueOf(pageIndex * 10)+" rows fetch next 10 row only";
+            query = query + "order by CheckinCount DESC ";
             new SearchResultActivity.GetFoodPlaceFull().execute(query);
         }
 

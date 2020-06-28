@@ -413,17 +413,12 @@ public class DetailsActivity extends AppCompatActivity {
     }
     public void SetWifis(ArrayList<WifiViewModel> wifiViewModels)
     {
-        // handle wifi
-        try {
-            for (WifiViewModel wifi : wifiViewModels) {
-                lstWifi.add(wifi);
-            }
-            if (lstWifi.size()>0) {
-                txtWifiName.setText(lstWifi.get(lstWifi.size() - 1).getName());
-                txtWifiPass.setText(lstWifi.get(lstWifi.size() - 1).getPassword());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        for (WifiViewModel wifi : wifiViewModels) {
+            lstWifi.add(wifi);
+        }
+        if (lstWifi.size()>0) {
+            txtWifiName.setText(lstWifi.get(lstWifi.size() - 1).getName());
+            txtWifiPass.setText(lstWifi.get(lstWifi.size() - 1).getPassword());
         }
     }
     ///// DialogAddWifi
@@ -447,7 +442,14 @@ public class DetailsActivity extends AppCompatActivity {
         btnUpdateWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WifiViewModel wifi = new WifiViewModel(tvWifiName.getText().toString(), tvWifiPass.getText().toString(), id);
+                String name = tvWifiName.getText().toString();
+                String password = tvWifiPass.getText().toString();
+                if(name == null || name == "" || password == null || password == "")
+                {
+                    Toast.makeText(DetailsActivity.this, "Invalid input", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                WifiViewModel wifi = new WifiViewModel(name, password, id);
                 new AddOrUpdateWifiAsync(wifi).execute();
                 Toast.makeText(DetailsActivity.this, "Wifi Added", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
