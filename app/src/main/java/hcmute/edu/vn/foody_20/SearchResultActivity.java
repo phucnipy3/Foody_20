@@ -3,6 +3,8 @@ package hcmute.edu.vn.foody_20;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,7 +60,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
-    private ListView lstResult;
     private ProgressBar progressBar;
     private TextView btnBestMatch, btnNearby, btnPopular;
     int pageIndex = 0;
@@ -73,6 +74,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private FusedLocationProviderClient client;
     private Geocoder geocoder;
     private List<Address> foodplaceaddresses;
+    private RecyclerView rcvFoodPlace;
 
     @Override
     protected void onResume() {
@@ -114,12 +116,13 @@ public class SearchResultActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         tvChooseProvince.setText(sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name)));
 
-        lstResult = (ListView) findViewById(R.id.lstResult);
+
 
         foodPlaceArrayList = new ArrayList<>();
-
-        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,R.layout.result_item,foodPlaceArrayList);
-        lstResult.setAdapter(foodPlaceFullViewAdapter);
+        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,foodPlaceArrayList);
+         rcvFoodPlace= (RecyclerView) findViewById(R.id.rcvSearchResult);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
+        rcvFoodPlace.setAdapter(foodPlaceFullViewAdapter);
 
         tvChooseProvince.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,15 +132,6 @@ public class SearchResultActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        lstResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(SearchResultActivity.this,DetailsActivity.class);
-                intent.putExtra("idFoodPlace",foodPlaceArrayList.get(position).getId());
-                startActivity(intent);
-            }
-        });
-
 
         ExecuteQuery();
 

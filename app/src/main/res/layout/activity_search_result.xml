@@ -147,10 +147,9 @@
             android:indeterminateDrawable="@drawable/pgb_1"
             android:indeterminateDuration="@android:integer/config_longAnimTime"
             />
-    <ListView
-        android:id="@+id/lstResult"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvSearchResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
