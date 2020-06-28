@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,11 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.nearby.messages.Distance;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -40,9 +36,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Time;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -234,7 +228,7 @@ public class SearchResultActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         return sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
     }
-    private class GetFoodPlaceFull extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
+    private class GetFoodPlaceFullAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
 
 
         @Override
@@ -318,12 +312,12 @@ public class SearchResultActivity extends AppCompatActivity {
 
         if(mySearchType == SearchType.BestMatch || mySearchType == SearchType.Nearby){
 
-            new SearchResultActivity.GetFoodPlaceFull().execute(query);
+            new GetFoodPlaceFullAsync().execute(query);
         }
         if(mySearchType==SearchType.Popular){
 
             query = query + "order by CheckinCount DESC ";
-            new SearchResultActivity.GetFoodPlaceFull().execute(query);
+            new GetFoodPlaceFullAsync().execute(query);
         }
 
     }
