@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,13 +35,26 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rcvFoodPlace;
     private boolean isLoading = false;
     int pageIndex = 0;
-    int pageSize = 6;
+    int pageSize = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final SwipeRefreshLayout swiperefreshMain = findViewById(R.id.swiperefreshMain);
+        swiperefreshMain.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swiperefreshMain.setRefreshing(true);
+                lstFoodPlace.clear();
+                myFoodPlaceAdapter.notifyDataSetChanged();
+                pageIndex = 0;
+                pageSize = 6;
+                new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
+//                myFoodPlaceAdapter.notifyDataSetChanged();
+                swiperefreshMain.setRefreshing(false);
+            }
+        });
 
         txtProvinces = findViewById(R.id.txtProvinces);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
