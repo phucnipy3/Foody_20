@@ -74,6 +74,7 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView tv_FPName;
         ImageView img_foodplace;
         CardView cardView_foodplace;
+        TextView tv_reviewed;
 
         public ItemViewHolder(View itemView){
             super(itemView);
@@ -81,6 +82,7 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
             tv_review =(TextView) itemView.findViewById(R.id.tvReview);
             img_foodplace=(ImageView) itemView.findViewById(R.id.imgFoodPlace);
             cardView_foodplace =(CardView) itemView.findViewById(R.id.card_view_id);
+            tv_reviewed = itemView.findViewById(R.id.tvReviewed);
         }
     }
     private class LoadingViewHolder extends RecyclerView.ViewHolder {
@@ -101,6 +103,10 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         FoodPlaceCardViewModel item = mData.get(position);
 
+        if(item.getReview().equals(""))
+        {
+            viewHolder.tv_reviewed.setVisibility(View.INVISIBLE);
+        }
         viewHolder.tv_FPName.setText(mData.get(position).getName());
         viewHolder.tv_review.setText(mData.get(position).getReview());
         Picasso.get().load(mData.get(position).getImage()).into(viewHolder.img_foodplace);
