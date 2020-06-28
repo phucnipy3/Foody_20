@@ -20,10 +20,8 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,7 +48,8 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    private TextView tvChooseProvince, txtBack;
+    private TextView tvChooseProvince;
+    private LinearLayout txtBackContainer;
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
@@ -90,7 +89,7 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        txtBack = findViewById(R.id.txtBack);
+        txtBackContainer = findViewById(R.id.txtBackContainer);
         tvChooseProvince =(TextView) findViewById(R.id.tvChooseProvince);
         edtSearch =(EditText) findViewById(R.id.edtSearchResult);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
@@ -217,7 +216,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
             }
         });
-        txtBack.setOnClickListener(new View.OnClickListener() {
+        txtBackContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

@@ -17,21 +17,29 @@
         android:background="#f00"
         android:padding="8dp"
         >
-        <TextView
-            android:id="@+id/txtBack"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/icn_back"
-            android:layout_marginRight="20dp"
+        <LinearLayout
+            android:id="@+id/txtBackContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            />
+            android:paddingVertical="5dp"
+            android:paddingRight="10dp"
+            >
+            <TextView
+                android:id="@+id/txtBack"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/icn_back"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_bgr"
-            android:layout_toRightOf="@+id/txtBack"
+            android:layout_toRightOf="@+id/txtBackContainer"
             >
         <EditText
             android:id="@+id/edtSearchResult"

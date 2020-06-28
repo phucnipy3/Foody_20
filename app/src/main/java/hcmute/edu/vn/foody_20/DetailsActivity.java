@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -66,7 +67,7 @@ public class DetailsActivity extends AppCompatActivity {
     private WifiAdapter wifiAdapter;
     private FoodViewAdapter myFoodAdapter;
     private String addressFoodPlace;
-    Button btnBackDetails;
+    LinearLayout btnBackDetails;
     ConstraintLayout lineMenu,lineWifi,maps;
     WifiViewModel wifi;
     int id = 0;

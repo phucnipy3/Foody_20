@@ -30,17 +30,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <Button
-                        android:id="@+id/btnBackDetails"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/icn_back"
-                        android:layout_margin="10dp"/>
                     <LinearLayout
+                        android:id="@+id/btnBackDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:orientation="vertical">
+                        android:layout_centerVertical="true"
+                        >
+                        <Button
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/icn_back"
+                            android:layout_margin="10dp"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:orientation="vertical"
+                        android:layout_marginHorizontal="40dp"
+                        android:paddingVertical="3dp">
 
                         <TextView
                             android:id="@+id/tvFoodPlaceName"
@@ -52,7 +62,9 @@
                             android:textColor="#fff"
                             android:textSize="20dp"
                             android:textStyle="bold"
-                            android:paddingHorizontal="50dp"/>
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            />
 
                         <TextView
                             android:id="@+id/tvProvinceName"
