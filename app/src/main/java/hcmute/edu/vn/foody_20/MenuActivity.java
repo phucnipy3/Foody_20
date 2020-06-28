@@ -24,7 +24,7 @@ import java.util.List;
 
 public class MenuActivity extends AppCompatActivity {
     LinearLayout btnChangeMenu;
-    Button btnBackMenu;
+    LinearLayout btnBackMenu;
     RecyclerView rcvImageMenu;
     ExpandableListView eplMenu;
     TextView tvNameMenu,tvShowPicture,tvShowMenu;

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textColor="#444"
-            android:textSize="25dp"
+            android:textSize="17dp"
             android:paddingVertical="5dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

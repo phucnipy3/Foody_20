@@ -109,9 +109,13 @@ public class FoodPlaceCardViewAdapter extends RecyclerView.Adapter<RecyclerView.
         {
             viewHolder.tv_reviewed.setVisibility(View.INVISIBLE);
         }
-        viewHolder.tv_FPName.setText(mData.get(position).getName());
-        viewHolder.tv_review.setText(mData.get(position).getReview());
-        Picasso.get().load(mData.get(position).getImage()).into(viewHolder.img_foodplace);
+        else {
+            viewHolder.tv_reviewed.setVisibility(View.VISIBLE);
+
+        }
+        viewHolder.tv_FPName.setText(item.getName());
+        viewHolder.tv_review.setText(item.getReview());
+        Picasso.get().load(item.getImage()).into(viewHolder.img_foodplace);
 
         viewHolder.cardView_foodplace.setOnClickListener(new View.OnClickListener() {
             @Override

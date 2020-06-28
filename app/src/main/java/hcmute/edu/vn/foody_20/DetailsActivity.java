@@ -68,7 +68,8 @@ public class DetailsActivity extends AppCompatActivity {
     private FoodViewAdapter myFoodAdapter;
     private String addressFoodPlace;
     LinearLayout btnBackDetails;
-    ConstraintLayout lineMenu,lineWifi,maps;
+    ConstraintLayout lineMenu,lineWifi;
+    LinearLayout maps;
     WifiViewModel wifi;
     int id = 0;
 
