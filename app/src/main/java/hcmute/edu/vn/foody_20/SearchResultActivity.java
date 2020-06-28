@@ -3,6 +3,8 @@ package hcmute.edu.vn.foody_20;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,14 +54,13 @@ public class SearchResultActivity extends AppCompatActivity {
     private EditText edtSearch;
     private ArrayList<FoodPlaceFullViewModel> foodPlaceArrayList;
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
-    private ListView lstResult;
     private ProgressBar progressBar;
-    private TextView btnBestMatch, btnNearby, btnPopular, btnFilter;
+    private TextView btnBestMatch, btnNearby, btnPopular;
     int pageIndex = 0;
     private String searchstring = "";
     private Timer timer;
     private enum SearchType {BestMatch, Popular, Nearby}
-    private LinearLayout lnlPopular,lnlBestmatch,lnlFilter,lnlNearBy;
+    private LinearLayout lnlPopular,lnlBestmatch,lnlNearBy;
     ;
     private SearchType mySearchType = SearchType.BestMatch;
     private Location myLocation = new Location("");
@@ -67,6 +68,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private FusedLocationProviderClient client;
     private Geocoder geocoder;
     private List<Address> foodplaceaddresses;
+    private RecyclerView rcvFoodPlace;
 
     @Override
     protected void onResume() {
@@ -74,6 +76,15 @@ public class SearchResultActivity extends AppCompatActivity {
         tvChooseProvince.setText(GetSelectedProvinceName());
         ExecuteQuery();
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Intent intentProvince = new Intent(SearchResultActivity.this,MainActivity.class);
+        intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intentProvince);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +96,9 @@ public class SearchResultActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
         btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
         btnNearby =(TextView) findViewById(R.id.btnNearby);
-        btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
         lnlPopular = findViewById(R.id.lnlPopular);
         lnlBestmatch = findViewById(R.id.lnlBestMatch);
-        lnlFilter  = findViewById(R.id.lnlFilter);
         lnlNearBy = findViewById(R.id.lnlNearby);
 
         tvChooseProvince.setText(GetSelectedProvinceName());
@@ -101,12 +110,13 @@ public class SearchResultActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         tvChooseProvince.setText(sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name)));
 
-        lstResult = (ListView) findViewById(R.id.lstResult);
+
 
         foodPlaceArrayList = new ArrayList<>();
-
-        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,R.layout.result_item,foodPlaceArrayList);
-        lstResult.setAdapter(foodPlaceFullViewAdapter);
+        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,foodPlaceArrayList);
+         rcvFoodPlace= (RecyclerView) findViewById(R.id.rcvSearchResult);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
+        rcvFoodPlace.setAdapter(foodPlaceFullViewAdapter);
 
         tvChooseProvince.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,15 +126,6 @@ public class SearchResultActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        lstResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(SearchResultActivity.this,DetailsActivity.class);
-                intent.putExtra("idFoodPlace",foodPlaceArrayList.get(position).getId());
-                startActivity(intent);
-            }
-        });
-
 
         ExecuteQuery();
 
