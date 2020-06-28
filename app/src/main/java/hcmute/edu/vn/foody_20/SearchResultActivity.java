@@ -60,12 +60,12 @@ public class SearchResultActivity extends AppCompatActivity {
     private FoodPlaceFullViewAdapter foodPlaceFullViewAdapter;
     private ListView lstResult;
     private ProgressBar progressBar;
-    private TextView btnBestMatch, btnNearby, btnPopular, btnFilter;
+    private TextView btnBestMatch, btnNearby, btnPopular;
     int pageIndex = 0;
     private String searchstring = "";
     private Timer timer;
     private enum SearchType {BestMatch, Popular, Nearby}
-    private LinearLayout lnlPopular,lnlBestmatch,lnlFilter,lnlNearBy;
+    private LinearLayout lnlPopular,lnlBestmatch,lnlNearBy;
     ;
     private SearchType mySearchType = SearchType.BestMatch;
     private Location myLocation = new Location("");
@@ -82,6 +82,15 @@ public class SearchResultActivity extends AppCompatActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        Intent intentProvince = new Intent(SearchResultActivity.this,MainActivity.class);
+        intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intentProvince);
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
@@ -91,11 +100,9 @@ public class SearchResultActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
         btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
         btnNearby =(TextView) findViewById(R.id.btnNearby);
-        btnFilter =(TextView) findViewById(R.id.btnFilter);
         btnPopular = (TextView) findViewById(R.id.btnPopular);
         lnlPopular = findViewById(R.id.lnlPopular);
         lnlBestmatch = findViewById(R.id.lnlBestMatch);
-        lnlFilter  = findViewById(R.id.lnlFilter);
         lnlNearBy = findViewById(R.id.lnlNearby);
 
         tvChooseProvince.setText(GetSelectedProvinceName());

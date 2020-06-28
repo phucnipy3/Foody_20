@@ -137,28 +137,7 @@
                 android:textStyle="bold"
                 />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/lnlFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="1dp"
-                android:layout_weight="0.1"
-                android:background="#eeddff"
-                android:paddingBottom="2dp"
-                >
-            <TextView
-                android:id="@+id/btnFilter"
-                android:text="Lọc"
-                android:drawableRight="@drawable/icn_filter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#eeddff"
-                android:gravity="center"
-                android:paddingVertical="10dp"
-                android:textColor="#000"
-                android:textStyle="bold"
-                />
-            </LinearLayout>
+
         </TableRow>
         <ProgressBar
             android:id="@+id/progress_bar_search"

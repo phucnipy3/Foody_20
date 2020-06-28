@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -98,6 +99,7 @@ public class FoodPlaceFullViewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         final FoodPlaceFullViewModel foodPlaceFullViewModel = foodplaceList.get(position);
+        String[] lstCode = new String[]{"FOODY20","50% tối đa 25K!","KHANGLD","30K cho đơn 40K!","PHUCNI","phí vận chuyển!","KOIEUAI","10% cho đơn 200K!"};
         Picasso.get().load(foodPlaceFullViewModel.getImage()).into(holder.imgFoodPlaceResult);
         holder.txtName.setText(foodPlaceFullViewModel.getName());
         holder.txtRate.setText(String.valueOf(foodPlaceFullViewModel.getRate()));
@@ -105,6 +107,12 @@ public class FoodPlaceFullViewAdapter extends BaseAdapter {
         holder.txtCmt.setText(String.valueOf(foodPlaceFullViewModel.getReviewCount()));
         holder.txtPhoto.setText(String.valueOf(foodPlaceFullViewModel.getCheckinCount()));
         holder.txtS.setText(Distance(foodPlaceFullViewModel.getAddress()).replace(",","."));
+
+        int min = 1;
+        int max = 4;
+        Random r = new Random();
+        int i = r.nextInt(max - min + 1) + min;
+        holder.txtDiscount.setText("  Nhập '"+lstCode[i*2-2]+"' nhận giảm "+lstCode[i*2-1]);
         return convertView;
     }
 
