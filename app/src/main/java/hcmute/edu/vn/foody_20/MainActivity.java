@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 lstFoodPlace.clear();
                 myFoodPlaceAdapter.notifyDataSetChanged();
                 pageIndex = 0;
-                pageSize = 6;
                 new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
 //                myFoodPlaceAdapter.notifyDataSetChanged();
                 swiperefreshMain.setRefreshing(false);

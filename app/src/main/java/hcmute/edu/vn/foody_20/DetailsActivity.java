@@ -188,7 +188,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         @Override
         protected FoodPlaceDetailViewModel doInBackground(Void... voids) {
-//            String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace, Province, FoodInMenu where FoodPlace.Id = FoodInMenu.FoodPlaceId and FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) + " group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
             String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, OpenTime, CloseTime, Max(Price) MaxPrice, Min(Price) MinPrice,Province.Name ProvinceName,Contact from FoodPlace left join FoodInMenu on FoodPlace.Id = FoodInMenu.FoodPlaceId, Province where FoodPlace.ProvinceId=Province.Id and FoodPlace.Id = "+String.valueOf(id) +" group by FoodPlace.Id, FoodPlace.Name, Address, Type, OpenTime, CloseTime,Province.Name ,Contact";
             FoodPlaceDetailViewModel foodPlaceDetailViewModel = new FoodPlaceDetailViewModel();
             try  {
@@ -230,7 +229,6 @@ public class DetailsActivity extends AppCompatActivity {
             addressFoodPlace = foodPlaceDetailViewModel.getAddress();
             tvAddress.setText(foodPlaceDetailViewModel.getAddress());
             tvType.setText(foodPlaceDetailViewModel.getType());
-            tvPrice.setText(new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMinPrice())+"đ" + " - " + new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMaxPrice()) +"đ");
             tvProvinceName.setText(foodPlaceDetailViewModel.getProvinceName());
             tvTime.setText(foodPlaceDetailViewModel.getOpenTime().toString().substring( 0, 5 ) + " - " + foodPlaceDetailViewModel.getCloseTime().toString().substring( 0, 5 ));
             tvFoodPlaceName.setText(foodPlaceDetailViewModel.getName());
@@ -244,6 +242,8 @@ public class DetailsActivity extends AppCompatActivity {
                 tvStatus.setText("CHƯA MỞ CỬA");
 
             contact = foodPlaceDetailViewModel.getContact();
+            tvPrice.setText(new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMinPrice())+"đ" + " - " + new DecimalFormat("#,###").format(foodPlaceDetailViewModel.getMaxPrice()) +"đ");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
