@@ -15,6 +15,16 @@ public class FoodPlaceFullViewModel {
     private int checkinCount;
     private float rate;
 
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    private double distance;
+
     public int getId() {
         return id;
     }

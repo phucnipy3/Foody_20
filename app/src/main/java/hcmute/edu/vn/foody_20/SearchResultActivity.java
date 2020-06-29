@@ -61,7 +61,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private enum SearchType {BestMatch, Popular, Nearby}
     private LinearLayout lnlPopular,lnlBestmatch,lnlNearBy;
     ;
-    private SearchType mySearchType = SearchType.BestMatch;
+    private SearchType currentSearchType = SearchType.BestMatch;
     private Location myLocation = new Location("");
     private Location foodplaceLocation = new Location("");
     private FusedLocationProviderClient client;
@@ -191,7 +191,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 resetBgr();
                 lnlPopular.setBackgroundColor(Color.parseColor("#00dddd"));
 
-                mySearchType = SearchType.Popular;
+                currentSearchType = SearchType.Popular;
                 ExecuteQuery();
             }
         });
@@ -201,7 +201,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 resetBgr();
                 lnlBestmatch.setBackgroundColor(Color.parseColor("#00dddd"));
 
-                mySearchType = SearchType.BestMatch;
+                currentSearchType = SearchType.BestMatch;
                 ExecuteQuery();
             }
         });
@@ -211,7 +211,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 resetBgr();
                 lnlNearBy.setBackgroundColor(Color.parseColor("#00dddd"));
 
-                mySearchType = SearchType.Nearby;
+                currentSearchType = SearchType.Nearby;
                 ExecuteQuery();
 
             }
@@ -228,8 +228,17 @@ public class SearchResultActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         return sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
     }
-    private class GetFoodPlaceFullAsync extends AsyncTask<String, Void, ArrayList<FoodPlaceFullViewModel>> {
+    private class GetFoodPlaceFullAsync extends AsyncTask<Void, Void, ArrayList<FoodPlaceFullViewModel>> {
 
+        String searchString;
+        int provinceId;
+        SearchType searchType;
+
+        public GetFoodPlaceFullAsync(String searchString, int provinceId, SearchType searchType) {
+            this.searchString = searchString;
+            this.provinceId = provinceId;
+            this.searchType = searchType;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -238,13 +247,24 @@ public class SearchResultActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<FoodPlaceFullViewModel> doInBackground(String... strings) {
-            String query = "select * from FoodPlace";
+        protected ArrayList<FoodPlaceFullViewModel> doInBackground(Void... voids) {
 
-            if(strings.length > 0)
-            {
-                query = strings[0];
+            String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
+            if(!searchstring.equals(null) && !searchstring.equals("")){
+                query = query + " and LOWER(FoodPlace.Name) like N'%"+ searchstring.toLowerCase() +"%' ";
             }
+            query = query + " and Province.Id = " + String.valueOf(provinceId);
+
+            if(searchType == SearchType.BestMatch){
+                //default
+            }
+            else if (searchType == SearchType.Nearby){
+                //do nothing with query
+            }
+            else if(searchType==SearchType.Popular){
+                query = query + " order by CheckinCount DESC ";
+            }
+
             ArrayList<FoodPlaceFullViewModel> foodPlaceFullViewModels = new ArrayList<>();
             try  {
                 // Set the connection string
@@ -267,6 +287,9 @@ public class SearchResultActivity extends AppCompatActivity {
                     foodPlaceFullViewModels.add(new FoodPlaceFullViewModel(id,name,address,type,image,openTime,closeTime,reviewContent,reviewCount,checkinCount,rate));
                 }
                 DBconn.close();
+                if (searchType == SearchType.Nearby){
+                    SortByDistance(foodPlaceFullViewModels);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -289,47 +312,33 @@ public class SearchResultActivity extends AppCompatActivity {
         ) {
                 foodPlaceArrayList.add(foodPlaceFullViewModel);
         }
-        if(mySearchType==SearchType.Nearby){
-            SortByDistance(foodPlaceArrayList);
-
-        }
         foodPlaceFullViewAdapter.notifyDataSetChanged();
 
     }
-    public int GetProvinceID(){
+    public int GetProvinceId(){
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         return sharedPreferences.getInt(getString(R.string.key_province_id),getResources().getInteger(R.integer.default_province_id));
     }
 
     public void ExecuteQuery(){
-        int provinceID = GetProvinceID();
-        String query = "select FoodPlace.Id Id, FoodPlace.Name Name, Address, Type, Image, OpenTime, CloseTime, ReviewContent, ReviewCount, CheckinCount, Rate from FoodPlace, Province where FoodPlace.ProvinceId = Province.Id ";
-        if(searchstring != null && searchstring !=""){
-            query = query + " and LOWER(FoodPlace.Name) like N'%"+ searchstring.toLowerCase() +"%' ";
-        }
-        query = query + " and Province.Id = " + String.valueOf(provinceID) + " ";
-
-        if(mySearchType == SearchType.BestMatch || mySearchType == SearchType.Nearby){
-
-            new GetFoodPlaceFullAsync().execute(query);
-        }
-        if(mySearchType==SearchType.Popular){
-
-            query = query + "order by CheckinCount DESC ";
-            new GetFoodPlaceFullAsync().execute(query);
-        }
+        int provinceId = GetProvinceId();
+        new GetFoodPlaceFullAsync(searchstring, provinceId, currentSearchType).execute();
 
     }
     public void SortByDistance(ArrayList<FoodPlaceFullViewModel> tempfoodPlaceArrayList){
+        for ( FoodPlaceFullViewModel item: tempfoodPlaceArrayList
+             ) {
+            item.setDistance(Distance(item.getAddress()));
+        }
         Collections.sort(tempfoodPlaceArrayList, new Comparator<FoodPlaceFullViewModel>() {
             @Override
             public int compare(FoodPlaceFullViewModel o1, FoodPlaceFullViewModel o2) {
-                if(Distance(o1.getAddress())>Distance(o2.getAddress())){
+                if(o1.getDistance()>o2.getDistance()){
                     return 1;
                 }
                 else {
-                    if(Distance(o1.getAddress())==Distance(o2.getAddress())){
+                    if(o1.getDistance()==o2.getDistance()){
                         return 0;
                     }
                     else
