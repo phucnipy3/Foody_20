@@ -60,7 +60,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private Timer timer;
     private enum SearchType {BestMatch, Popular, Nearby}
     private LinearLayout lnlPopular,lnlBestmatch,lnlNearBy;
-    ;
+
     private SearchType currentSearchType = SearchType.BestMatch;
     private Location myLocation = new Location("");
     private Location foodplaceLocation = new Location("");
@@ -89,34 +89,21 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        txtBackContainer = findViewById(R.id.txtBackContainer);
-        tvChooseProvince =(TextView) findViewById(R.id.tvChooseProvince);
-        edtSearch =(EditText) findViewById(R.id.edtSearchResult);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
-        btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
-        btnNearby =(TextView) findViewById(R.id.btnNearby);
-        btnPopular = (TextView) findViewById(R.id.btnPopular);
-        lnlPopular = findViewById(R.id.lnlPopular);
-        lnlBestmatch = findViewById(R.id.lnlBestMatch);
-        lnlNearBy = findViewById(R.id.lnlNearby);
 
-        tvChooseProvince.setText(GetSelectedProvinceName());
+        BindView();
+
+        SetViewEvent();
+
         geocoder = new Geocoder(this, Locale.getDefault());
         client = LocationServices.getFusedLocationProviderClient(this);
         GetMyLocation();
 
-        SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        tvChooseProvince.setText(sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name)));
+        tvChooseProvince.setText(GetSelectedProvinceName());
 
+        ExecuteQuery();
+    }
 
-
-        foodPlaceArrayList = new ArrayList<>();
-        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,foodPlaceArrayList);
-         rcvFoodPlace= (RecyclerView) findViewById(R.id.rcvSearchResult);
-        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
-        rcvFoodPlace.setAdapter(foodPlaceFullViewAdapter);
-
+    private void SetViewEvent(){
         tvChooseProvince.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,8 +112,6 @@ public class SearchResultActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        ExecuteQuery();
 
         edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -223,6 +208,27 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void BindView(){
+        txtBackContainer = findViewById(R.id.txtBackContainer);
+        tvChooseProvince =(TextView) findViewById(R.id.tvChooseProvince);
+        edtSearch =(EditText) findViewById(R.id.edtSearchResult);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_search);
+        btnBestMatch = (TextView) findViewById(R.id.btnBestMatch);
+        btnNearby =(TextView) findViewById(R.id.btnNearby);
+        btnPopular = (TextView) findViewById(R.id.btnPopular);
+        lnlPopular = findViewById(R.id.lnlPopular);
+        lnlBestmatch = findViewById(R.id.lnlBestMatch);
+        lnlNearBy = findViewById(R.id.lnlNearby);
+
+        tvChooseProvince.setText(GetSelectedProvinceName());
+        foodPlaceArrayList = new ArrayList<>();
+        foodPlaceFullViewAdapter = new FoodPlaceFullViewAdapter(this,this,foodPlaceArrayList);
+        rcvFoodPlace= (RecyclerView) findViewById(R.id.rcvSearchResult);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,1));
+        rcvFoodPlace.setAdapter(foodPlaceFullViewAdapter);
+    }
+
     public String GetSelectedProvinceName(){
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
@@ -315,14 +321,14 @@ public class SearchResultActivity extends AppCompatActivity {
         foodPlaceFullViewAdapter.notifyDataSetChanged();
 
     }
-    public int GetProvinceId(){
+    public int GetSelectedProvinceId(){
         SharedPreferences sharedPreferences;
         sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         return sharedPreferences.getInt(getString(R.string.key_province_id),getResources().getInteger(R.integer.default_province_id));
     }
 
     public void ExecuteQuery(){
-        int provinceId = GetProvinceId();
+        int provinceId = GetSelectedProvinceId();
         new GetFoodPlaceFullAsync(searchstring, provinceId, currentSearchType).execute();
 
     }

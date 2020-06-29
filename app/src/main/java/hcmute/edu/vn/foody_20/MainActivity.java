@@ -41,6 +41,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SetEventRefresh();
+
+        BindView();
+
+        SetViewEvent();
+
+        initScrollListener();
+
+        new GetFoodPlaceCardAsync(pageIndex, pageSize).execute();
+
+    }
+
+    private void SetViewEvent() {
+        edtSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SearchResultActivity.class));
+            }
+        });
+        txtProvinces.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ChooseProvincesActivity.class);
+                intent.putExtra("backToMain", true);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void BindView() {
+        txtProvinces = findViewById(R.id.txtProvinces);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
+        edtSearch = (EditText) findViewById(R.id.edtSearch);
+        txtProvinces.setText(GetSelectedProvinceName());
+        lstFoodPlace = new ArrayList<>();
+        rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
+        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this, lstFoodPlace);
+        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this, 2));
+        rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
+    }
+
+    private void SetEventRefresh() {
         final SwipeRefreshLayout swiperefreshMain = findViewById(R.id.swiperefreshMain);
         swiperefreshMain.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -49,43 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 lstFoodPlace.clear();
                 myFoodPlaceAdapter.notifyDataSetChanged();
                 pageIndex = 0;
-                new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
-//                myFoodPlaceAdapter.notifyDataSetChanged();
+                new GetFoodPlaceCardAsync(pageIndex, pageSize).execute();
                 swiperefreshMain.setRefreshing(false);
             }
         });
-
-        txtProvinces = findViewById(R.id.txtProvinces);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar_main);
-        edtSearch = (EditText) findViewById(R.id.edtSearch);
-
-        txtProvinces.setText(GetSelectedProvinceName());
-
-        edtSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SearchResultActivity.class));
-            }
-        });
-        txtProvinces.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,ChooseProvincesActivity.class);
-                intent.putExtra("backToMain",true);
-                startActivity(intent);
-            }
-        });
-        lstFoodPlace = new ArrayList<>();
-        rcvFoodPlace = (RecyclerView) findViewById(R.id.recyclerviewFoodPlace_id);
-        myFoodPlaceAdapter = new FoodPlaceCardViewAdapter(this,lstFoodPlace);
-        rcvFoodPlace.setLayoutManager(new GridLayoutManager(this,2));
-        rcvFoodPlace.setAdapter(myFoodPlaceAdapter);
-        initScrollListener();
-
-        new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
-
     }
-    private class GetFoodPlaceCardAsync extends AsyncTask<Void, Void, ArrayList<FoodPlaceCardViewModel>>{
+
+    private class GetFoodPlaceCardAsync extends AsyncTask<Void, Void, ArrayList<FoodPlaceCardViewModel>> {
         int pageIndex;
         int pageSize;
 
@@ -97,31 +110,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if(pageIndex!=0) {
+            if (pageIndex != 0) {
                 lstFoodPlace.add(null);
                 myFoodPlaceAdapter.notifyItemInserted(lstFoodPlace.size() - 1);
                 lstFoodPlace.add(null);
                 myFoodPlaceAdapter.notifyItemInserted(lstFoodPlace.size() - 1);
             }
-            isLoading=true;
+            isLoading = true;
         }
 
         @Override
         protected ArrayList<FoodPlaceCardViewModel> doInBackground(Void... voids) {
-            String query = "select Id, Name, Image, ReviewContent from FoodPlace where FoodPlace.ProvinceId = " + GetSelectedProvinceId() + " order by Id offset "+ String.valueOf(pageIndex * pageSize)+" rows fetch next " + pageSize + " row only";
+            String query = "select Id, Name, Image, ReviewContent from FoodPlace where FoodPlace.ProvinceId = " + GetSelectedProvinceId() + " order by Id offset " + String.valueOf(pageIndex * pageSize) + " rows fetch next " + pageSize + " row only";
             ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels = new ArrayList<>();
-            try  {
+            try {
                 // Set the connection string
                 Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
                 Connection DBconn = DriverManager.getConnection(getString(R.string.connection));
                 Statement stmt = DBconn.createStatement();
                 ResultSet resultSet = stmt.executeQuery(query);
-                while(resultSet.next()){
+                while (resultSet.next()) {
                     int id = resultSet.getInt("Id");
                     String name = resultSet.getString("Name");
                     String image = resultSet.getString("Image");
                     String reviewContent = resultSet.getString("ReviewContent");
-                    foodPlaceCardViewModels.add(new FoodPlaceCardViewModel(id,image,name,reviewContent));
+                    foodPlaceCardViewModels.add(new FoodPlaceCardViewModel(id, image, name, reviewContent));
                 }
                 DBconn.close();
             } catch (Exception e) {
@@ -135,33 +148,35 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels) {
             super.onPostExecute(foodPlaceCardViewModels);
             progressBar.setVisibility(View.GONE);
-            if(pageIndex!=0){
+            if (pageIndex != 0) {
                 lstFoodPlace.remove(lstFoodPlace.size() - 1);
                 myFoodPlaceAdapter.notifyItemRemoved(lstFoodPlace.size());
                 lstFoodPlace.remove(lstFoodPlace.size() - 1);
                 myFoodPlaceAdapter.notifyItemRemoved(lstFoodPlace.size());
             }
             SetFoodPlaceCards(foodPlaceCardViewModels);
-            isLoading =false;
+            isLoading = false;
         }
     }
-    public void SetFoodPlaceCards(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels){
-        for (FoodPlaceCardViewModel foodPlaceCardViewModel: foodPlaceCardViewModels
+
+    public void SetFoodPlaceCards(ArrayList<FoodPlaceCardViewModel> foodPlaceCardViewModels) {
+        for (FoodPlaceCardViewModel foodPlaceCardViewModel : foodPlaceCardViewModels
         ) {
             lstFoodPlace.add(foodPlaceCardViewModel);
         }
         myFoodPlaceAdapter.notifyDataSetChanged();
     }
 
-    public String GetSelectedProvinceName(){
+    public String GetSelectedProvinceName() {
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        return sharedPreferences.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key), MODE_PRIVATE);
+        return sharedPreferences.getString(getString(R.string.key_province_name), getString(R.string.default_province_name));
     }
-    public int GetSelectedProvinceId(){
+
+    public int GetSelectedProvinceId() {
         SharedPreferences sharedPreferences;
-        sharedPreferences = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
-        return sharedPreferences.getInt(getString(R.string.key_province_id),getResources().getInteger(R.integer.default_province_id));
+        sharedPreferences = getSharedPreferences(getString(R.string.share_key), MODE_PRIVATE);
+        return sharedPreferences.getInt(getString(R.string.key_province_id), getResources().getInteger(R.integer.default_province_id));
     }
 
     private void initScrollListener() {
@@ -189,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMore() {
         pageIndex++;
-        new GetFoodPlaceCardAsync(pageIndex,pageSize).execute();
+        new GetFoodPlaceCardAsync(pageIndex, pageSize).execute();
     }
 }
 

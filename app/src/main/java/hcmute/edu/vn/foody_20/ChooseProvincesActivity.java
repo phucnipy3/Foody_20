@@ -47,7 +47,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
         lstProvinces = (ListView) findViewById(R.id.lstProvices);
         provinceArrayList = new ArrayList<>();
         provinceTempArrayList = new ArrayList<>();
-        provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList, GetSelectedProvince());
+        provinceAdapter = new ProvinceViewAdapter(this,R.layout.province_item,provinceArrayList, GetSelectedProvinceName());
         intentProvince.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         lstProvinces.setAdapter(provinceAdapter);
 
@@ -117,7 +117,7 @@ public class ChooseProvincesActivity extends AppCompatActivity {
 
     }
 
-    public String GetSelectedProvince(){
+    public String GetSelectedProvinceName(){
         SharedPreferences sharedPreferencesProvince ;
         sharedPreferencesProvince = getSharedPreferences(getString(R.string.share_key),MODE_PRIVATE);
         return sharedPreferencesProvince.getString(getString(R.string.key_province_name),getString(R.string.default_province_name));
